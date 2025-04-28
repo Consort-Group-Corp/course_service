@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/changeset/V012_create_course_schema.sql
+  - include:
+      file: db/changelog/changeset/V013_create_course_table.sql
+  - include:
+      file: db/changelog/changeset/V014_create_course_translation_table.sql
+  - include:
+      file: db/changelog/changeset/V015_create_module_table.sql
+  - include:
+      file: db/changelog/changeset/V016_create_module_translation_table.sql
+  - include:
+      file: db/changelog/changeset/V017_create_lesson_table.sql
+  - include:
+      file: db/changelog/changeset/V018_create_lesson_translation_table.sql
+  - include:
+      file: db/changelog/changeset/V019_create_resource_table.sql
+  - include:
+      file: db/changelog/changeset/V020_create_resource_translation_table.sql
+  - include:
+      file: db/changelog/changeset/V021_create_video_metadata.sql

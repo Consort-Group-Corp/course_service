@@ -1,0 +1,8 @@
+package uz.consorgroup.course_service.entity.enumeration;
+
+public enum CourseType {
+     BASE,
+     SPECIAL,
+     PREMIUM,
+     SCHOOL
+}
