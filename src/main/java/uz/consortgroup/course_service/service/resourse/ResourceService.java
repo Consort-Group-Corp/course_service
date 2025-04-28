@@ -1,6 +1,7 @@
 package uz.consortgroup.course_service.service.resourse;
 
 import uz.consortgroup.course_service.dto.request.module.ModuleCreateRequestDto;
+import uz.consortgroup.course_service.dto.request.resource.ResourceCreateRequestDto;
 import uz.consortgroup.course_service.entity.Lesson;
 import uz.consortgroup.course_service.entity.Resource;
 import uz.consortgroup.course_service.entity.enumeration.MimeType;
@@ -10,8 +11,15 @@ import java.util.List;
 import java.util.UUID;
 
 public interface ResourceService {
-    List<Resource> saveResources(List<ModuleCreateRequestDto> moduleDtos, List<Lesson> lessons);
-    List<Resource> saveAll(List<Resource> resources);
-    Resource create(UUID lessonId, ResourceType resourceType, String fileUrl, Long fileSize, MimeType mimeType, Integer orderPosition);
-    List<Resource> findResourceById(UUID id);
+    Resource create(UUID lessonId,
+                    ResourceType resourceType,
+                    String fileUrl,
+                    Long fileSize,
+                    MimeType mimeType,
+                    Integer orderPosition);
+
+
+    List<Resource> createBulk(List<ModuleCreateRequestDto> moduleDtos, List<Lesson> lessons);
+
+    List<Resource> saveAllResources(List<Resource> resources);
 }

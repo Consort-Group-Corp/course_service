@@ -22,7 +22,6 @@ public interface LessonMapper {
             @Mapping(target = "createdAt",     source = "createdAt"),
             @Mapping(target = "updatedAt",     source = "updatedAt"),
             @Mapping(target = "translations",  source = "translations"),
-            @Mapping(target = "resources",     source = "resources")
     })
     LessonResponseDto toResponseDto(Lesson lesson);
 

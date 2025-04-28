@@ -12,36 +12,62 @@ import uz.consortgroup.course_service.entity.Resource;
 import uz.consortgroup.course_service.entity.enumeration.MimeType;
 import uz.consortgroup.course_service.entity.enumeration.ResourceType;
 import uz.consortgroup.course_service.repository.ResourceRepository;
+import uz.consortgroup.course_service.repository.LessonRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@RequiredArgsConstructor
 @Service
+@RequiredArgsConstructor
 public class ResourceServiceImpl implements ResourceService {
     private final ResourceRepository resourceRepository;
+    private final LessonRepository lessonRepository;
 
     @Override
     @Transactional
     @AllAspect
-    public List<Resource> saveResources(List<ModuleCreateRequestDto> moduleDtos, List<Lesson> lessons) {
+    public Resource create(UUID lessonId,
+                           ResourceType resourceType,
+                           String fileUrl,
+                           Long fileSize,
+                           MimeType mimeType,
+                           Integer orderPosition) {
+
+        Lesson lesson = lessonRepository.getReferenceById(lessonId);
+        Resource res = Resource.builder()
+                .lesson(lesson)
+                .resourceType(resourceType)
+                .fileUrl(fileUrl)
+                .fileSize(fileSize)
+                .mimeType(mimeType)
+                .orderPosition(orderPosition)
+                .build();
+        return resourceRepository.save(res);
+    }
+
+    @Override
+    @Transactional
+    @AllAspect
+    public List<Resource> createBulk(List<ModuleCreateRequestDto> moduleDtos, List<Lesson> lessons) {
         List<Resource> resources = new ArrayList<>();
         int lessonIndex = 0;
 
         for (ModuleCreateRequestDto moduleDto : moduleDtos) {
             for (LessonCreateRequestDto lessonDto : moduleDto.getLessons()) {
                 Lesson lesson = lessons.get(lessonIndex++);
-
-                for (ResourceCreateRequestDto resourceDto : lessonDto.getResources()) {
-                    resources.add(Resource.builder()
-                            .lesson(lesson)
-                            .resourceType(resourceDto.getResourceType())
-                            .fileUrl(resourceDto.getFileUrl())
-                            .fileSize(resourceDto.getFileSize())
-                            .mimeType(resourceDto.getMimeType())
-                            .orderPosition(resourceDto.getOrderPosition())
-                            .build());
+                if (lessonDto.getResources() != null && !lessonDto.getResources().isEmpty()) {
+                    List<Resource> lessonResources = lessonDto.getResources().stream()
+                            .map(resourceDto -> Resource.builder()
+                                    .lesson(lesson)
+                                    .resourceType(resourceDto.getResourceType())
+                                    .fileUrl(resourceDto.getFileUrl())
+                                    .fileSize(resourceDto.getFileSize())
+                                    .mimeType(resourceDto.getMimeType())
+                                    .orderPosition(resourceDto.getOrderPosition())
+                                    .build())
+                            .toList();
+                    resources.addAll(lessonResources);
                 }
             }
         }
@@ -49,30 +75,10 @@ public class ResourceServiceImpl implements ResourceService {
         return resourceRepository.saveAll(resources);
     }
 
-    @Override
-    @AllAspect
-    public List<Resource> saveAll(List<Resource> resources) {
-       return resourceRepository.saveAll(resources);
-    }
 
-
-    @Override
     @Transactional
     @AllAspect
-    public Resource create(UUID lessonId, ResourceType resourceType, String fileUrl, Long fileSize, MimeType mimeType, Integer orderPosition) {
-        return resourceRepository.save(Resource.builder()
-                .lesson(Lesson.builder().id(lessonId).build())
-                .resourceType(resourceType)
-                .fileUrl(fileUrl)
-                .fileSize(fileSize)
-                .mimeType(mimeType)
-                .orderPosition(orderPosition)
-                .build());
-    }
-
-    @Override
-    @AllAspect
-    public List<Resource> findResourceById(UUID id) {
-        return resourceRepository.findResourceById(id);
+    public List<Resource> saveAllResources(List<Resource> resources) {
+        return resourceRepository.saveAll(resources);
     }
 }

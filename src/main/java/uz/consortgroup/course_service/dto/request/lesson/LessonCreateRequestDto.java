@@ -2,6 +2,7 @@ package uz.consortgroup.course_service.dto.request.lesson;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,5 +39,7 @@ public class LessonCreateRequestDto {
 
     private List<LessonTranslationRequestDto> translations;
 
+    @NotNull(message = "Resources are required")
+    @Size(min = 1, message = "At least one resource is required")
     private List<ResourceCreateRequestDto> resources;
 }
