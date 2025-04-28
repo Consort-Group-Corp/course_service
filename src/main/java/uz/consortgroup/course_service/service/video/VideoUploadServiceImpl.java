@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.consortgroup.course_service.asspect.annotation.AllAspect;
+import uz.consortgroup.course_service.dto.request.resource.ResourceTranslationRequestDto;
 import uz.consortgroup.course_service.dto.request.video.BulkVideoUploadRequestDto;
 import uz.consortgroup.course_service.dto.request.video.VideoUploadRequestDto;
 import uz.consortgroup.course_service.dto.response.resource.ResourceTranslationResponseDto;
@@ -15,9 +16,9 @@ import uz.consortgroup.course_service.entity.ResourceTranslation;
 import uz.consortgroup.course_service.entity.VideoMetaData;
 import uz.consortgroup.course_service.entity.enumeration.MimeType;
 import uz.consortgroup.course_service.entity.enumeration.ResourceType;
-import uz.consortgroup.course_service.service.lesson.LessonServiceImpl;
-import uz.consortgroup.course_service.service.resourse.ResourceServiceImpl;
-import uz.consortgroup.course_service.service.resourse.ResourceTranslationServiceImpl;
+import uz.consortgroup.course_service.service.lesson.LessonService;
+import uz.consortgroup.course_service.service.resourse.ResourceService;
+import uz.consortgroup.course_service.service.resourse.ResourceTranslationService;
 import uz.consortgroup.course_service.service.storage.FileStorageService;
 
 import java.util.ArrayList;
@@ -33,24 +34,23 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class VideoUploadServiceImpl implements VideoUploadService {
     private final FileStorageService storage;
-    private final LessonServiceImpl lessonServiceImpl;
-    private final ResourceServiceImpl resourceServiceImpl;
-    private final VideoMetadataServiceImpl videoMetadataServiceImpl;
-    private final ResourceTranslationServiceImpl resourceTranslationServiceImpl;
-
+    private final LessonService lessonService;
+    private final ResourceService resourceService;
+    private final VideoMetadataService videoMetadataService;
+    private final ResourceTranslationService resourceTranslationService; // Добавляем зависимость
 
     @Override
     @Transactional
     @AllAspect
     public VideoUploadResponseDto upload(UUID lessonId, VideoUploadRequestDto dto) {
-        Lesson lesson = lessonServiceImpl.getLessonEntity(lessonId);
+        Lesson lesson = lessonService.getLessonEntity(lessonId);
         UUID courseId = lesson.getModule().getCourse().getId();
 
         String url = storage.store(courseId, lessonId, dto.getVideo());
 
         MimeType mimeType = MimeType.fromContentType(dto.getVideo().getContentType());
 
-        Resource res = resourceServiceImpl.create(
+        Resource res = resourceService.create(
                 lessonId,
                 ResourceType.VIDEO,
                 url,
@@ -59,13 +59,28 @@ public class VideoUploadServiceImpl implements VideoUploadService {
                 dto.getOrderPosition()
         );
 
-        VideoMetaData meta = videoMetadataServiceImpl.create(
+        // Создаем переводы
+        List<ResourceTranslation> translations = new ArrayList<>();
+        if (dto.getTranslations() != null) {
+            translations = dto.getTranslations().stream()
+                    .map(t -> ResourceTranslation.builder()
+                            .resource(res)
+                            .language(t.getLanguage())
+                            .title(t.getTitle())
+                            .description(t.getDescription())
+                            .build())
+                    .toList();
+            translations = resourceTranslationService.saveAllTranslations(translations);
+        }
+
+        // Привязываем переводы к ресурсу
+        res.setTranslations(translations);
+
+        VideoMetaData meta = videoMetadataService.create(
                 res.getId(),
                 dto.getDuration(),
                 dto.getResolution()
         );
-
-        resourceTranslationServiceImpl.saveTranslations(dto.getTranslations(), res);
 
         return VideoUploadResponseDto.builder()
                 .resourceId(res.getId())
@@ -74,21 +89,21 @@ public class VideoUploadServiceImpl implements VideoUploadService {
                 .resolution(meta.getResolution())
                 .orderPosition(res.getOrderPosition())
                 .translations(
-                        Optional.ofNullable(res.getTranslations()).stream().flatMap(Collection::stream)
+                        translations.stream()
                                 .map(t -> ResourceTranslationResponseDto.builder()
                                         .id(t.getId())
                                         .language(t.getLanguage())
                                         .title(t.getTitle())
                                         .description(t.getDescription())
-                                        .build()
-                                ).toList())
+                                        .build())
+                                .toList())
                 .build();
     }
 
     @Transactional
     @AllAspect
     public BulkVideoUploadResponseDto uploadVideos(UUID lessonId, BulkVideoUploadRequestDto dto) {
-        Lesson lesson = lessonServiceImpl.getLessonEntity(lessonId);
+        Lesson lesson = lessonService.getLessonEntity(lessonId);
         UUID courseId = lesson.getModule().getCourse().getId();
 
         List<Resource> resources = new ArrayList<>();
@@ -103,13 +118,12 @@ public class VideoUploadServiceImpl implements VideoUploadService {
                         .collect(Collectors.toList())
         );
 
-
+        // Создаем ресурсы и метаданные
         for (int i = 0; i < dto.getVideos().size(); i++) {
             VideoUploadRequestDto vid = dto.getVideos().get(i);
             String url = urls.get(i);
             MimeType mimeType = MimeType.fromContentType(vid.getVideo().getContentType());
 
-            // --- Resource
             Resource res = Resource.builder()
                     .lesson(lesson)
                     .resourceType(ResourceType.VIDEO)
@@ -126,39 +140,51 @@ public class VideoUploadServiceImpl implements VideoUploadService {
                     .resolution(vid.getResolution())
                     .build();
             metas.add(meta);
+        }
 
-            // --- Переводы
+        // Сохраняем ресурсы и метаданные
+        resources = resourceService.saveAllResources(resources);
+        videoMetadataService.saveAll(metas);
+
+        // Создаем переводы после сохранения ресурсов
+        for (int i = 0; i < dto.getVideos().size(); i++) {
+            VideoUploadRequestDto vid = dto.getVideos().get(i);
+            Resource res = resources.get(i);
+
             if (vid.getTranslations() != null) {
-                vid.getTranslations().forEach(t ->
-                        translations.add(ResourceTranslation.builder()
-                                .resource(res)
-                                .language(t.getLanguage())
-                                .title(t.getTitle())
-                                .description(t.getDescription())
-                                .build())
-                );
+                for (ResourceTranslationRequestDto t : vid.getTranslations()) {
+                    translations.add(ResourceTranslation.builder()
+                            .resource(res) // Ссылаемся на уже сохраненный ресурс
+                            .language(t.getLanguage())
+                            .title(t.getTitle())
+                            .description(t.getDescription())
+                            .build());
+                }
             }
         }
 
-        resourceServiceImpl.saveAll(resources);
-        videoMetadataServiceImpl.saveAll(metas);
-        resourceTranslationServiceImpl.saveAllTranslations(translations);
+        // Сохраняем переводы
+        translations = resourceTranslationService.saveAllTranslations(translations);
 
-        return buildBulkResponse(resources, metas, translations);
+        // Привязываем переводы к ресурсам
+        for (Resource res : resources) {
+            List<ResourceTranslation> resourceTranslations = translations.stream()
+                    .filter(t -> t.getResource().getId().equals(res.getId()))
+                    .toList();
+            res.setTranslations(resourceTranslations);
+        }
+
+        return buildBulkResponse(resources, metas);
     }
 
-
-    private BulkVideoUploadResponseDto buildBulkResponse(List<Resource> resources, List<VideoMetaData> metas, List<ResourceTranslation> translations) {
+    private BulkVideoUploadResponseDto buildBulkResponse(List<Resource> resources, List<VideoMetaData> metas) {
         Map<UUID, VideoMetaData> metaMap = metas.stream()
                 .collect(Collectors.toMap(m -> m.getResource().getId(), Function.identity()));
-
-        Map<UUID, List<ResourceTranslation>> transMap = translations.stream()
-                .collect(Collectors.groupingBy(t -> t.getResource().getId()));
 
         List<VideoUploadResponseDto> videoDtos = resources.stream()
                 .map(res -> {
                     VideoMetaData m = metaMap.get(res.getId());
-                    List<ResourceTranslationResponseDto> trDtos = Optional.ofNullable(transMap.get(res.getId()))
+                    List<ResourceTranslationResponseDto> trDtos = Optional.ofNullable(res.getTranslations())
                             .orElseGet(List::of)
                             .stream()
                             .map(t -> ResourceTranslationResponseDto.builder()
@@ -177,8 +203,7 @@ public class VideoUploadServiceImpl implements VideoUploadService {
                             .orderPosition(res.getOrderPosition())
                             .translations(trDtos)
                             .build();
-                })
-                .toList();
+                }).toList();
 
         return BulkVideoUploadResponseDto.builder()
                 .videos(videoDtos)

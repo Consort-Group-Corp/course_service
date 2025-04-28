@@ -16,9 +16,7 @@ import uz.consortgroup.course_service.repository.ResourceTranslationRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,29 +25,27 @@ public class ResourceTranslationServiceImpl implements ResourceTranslationServic
 
     @Override
     @Transactional
-    @LoggingAspectBeforeMethod
-    @LoggingAspectAfterMethod
     public void saveTranslations(List<ModuleCreateRequestDto> modules, List<Resource> savedResources) {
         List<ResourceTranslation> translations = new ArrayList<>();
-
-        Map<String, Resource> resourceByUrl = savedResources.stream()
-                .collect(Collectors.toMap(Resource::getFileUrl, r -> r));
+        int resourceIndex = 0;
 
         for (ModuleCreateRequestDto moduleDto : modules) {
             for (LessonCreateRequestDto lessonDto : moduleDto.getLessons()) {
-                for (ResourceCreateRequestDto resourceDto : lessonDto.getResources()) {
-                    Resource resource = resourceByUrl.get(resourceDto.getFileUrl());
-                    if (resource == null) continue;
-
-                    for (ResourceTranslationRequestDto translationDto : resourceDto.getTranslations()) {
-                        translations.add(
-                                ResourceTranslation.builder()
-                                        .resource(resource)
-                                        .language(translationDto.getLanguage())
-                                        .title(translationDto.getTitle())
-                                        .description(translationDto.getDescription())
-                                        .build()
-                        );
+                if (lessonDto.getResources() != null && !lessonDto.getResources().isEmpty()) {
+                    for (ResourceCreateRequestDto resourceDto : lessonDto.getResources()) {
+                        Resource resource = savedResources.get(resourceIndex++);
+                        if (resourceDto.getTranslations() != null) {
+                            for (ResourceTranslationRequestDto translationDto : resourceDto.getTranslations()) {
+                                translations.add(
+                                        ResourceTranslation.builder()
+                                                .resource(resource)
+                                                .language(translationDto.getLanguage())
+                                                .title(translationDto.getTitle())
+                                                .description(translationDto.getDescription())
+                                                .build()
+                                );
+                            }
+                        }
                     }
                 }
             }
@@ -85,8 +81,8 @@ public class ResourceTranslationServiceImpl implements ResourceTranslationServic
 
     @Override
     @AllAspect
-    public void saveAllTranslations(List<ResourceTranslation> translations) {
-        resourceTranslationRepository.saveAll(translations);
+    public List<ResourceTranslation> saveAllTranslations(List<ResourceTranslation> translations) {
+        return resourceTranslationRepository.saveAll(translations);
     }
 
     @Override

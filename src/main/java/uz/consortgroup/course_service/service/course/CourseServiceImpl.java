@@ -43,11 +43,9 @@ public class CourseServiceImpl implements CourseService {
     private final ModuleTranslationMapper moduleTranslationMapper;
     private final LessonService lessonService;
     private final LessonMapper lessonMapper;
-    private final ResourceService resourceService;
     private final CourseTranslationService courseTranslationService;
     private final ModuleTranslationService moduleTranslationService;
     private final LessonTranslationService lessonTranslationService;
-    private final ResourceTranslationService resourceTranslationService;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -69,8 +67,6 @@ public class CourseServiceImpl implements CourseService {
         List<Lesson> savedLessons = lessonService.saveLessons(dto.getModules(), savedModules);
         lessonTranslationService.saveTranslations(dto.getModules(), savedLessons);
 
-        List<Resource> savedResources = resourceService.saveResources(dto.getModules(), savedLessons);
-        resourceTranslationService.saveTranslations(dto.getModules(), savedResources);
 
         CourseResponseDto response = courseMapper.toResponseDto(savedCourse);
         response.setTranslations(savedTranslations.stream()

@@ -36,5 +36,4 @@ public class CourseResponseDto {
 
     private List<CourseTranslationResponseDto> translations;
     private List<ModuleResponseDto> modules;
-    private List<LessonResponseDto> lessons;
 }
