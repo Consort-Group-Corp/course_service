@@ -3,10 +3,10 @@ package uz.consortgroup.course_service.service.lesson;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uz.consortgroup.course_service.asspect.annotation.AllAspect;
 import uz.consortgroup.course_service.asspect.annotation.LoggingAspectAfterMethod;
 import uz.consortgroup.course_service.asspect.annotation.LoggingAspectBeforeMethod;
 import uz.consortgroup.course_service.dto.request.lesson.LessonCreateRequestDto;
-import uz.consortgroup.course_service.dto.request.lesson.LessonTranslationRequestDto;
 import uz.consortgroup.course_service.dto.request.module.ModuleCreateRequestDto;
 import uz.consortgroup.course_service.entity.Lesson;
 import uz.consortgroup.course_service.entity.LessonTranslation;
@@ -32,36 +32,26 @@ public class LessonTranslationServiceImpl implements LessonTranslationService {
         for (ModuleCreateRequestDto moduleDto : moduleDtos) {
             for (LessonCreateRequestDto lessonDto : moduleDto.getLessons()) {
                 Lesson lesson = savedLessons.get(lessonIndex++);
-                if (lessonDto.getTranslations() != null) {
-                    for (LessonTranslationRequestDto translationDto : lessonDto.getTranslations()) {
-                        translations.add(
-                                LessonTranslation.builder()
-                                        .lesson(lesson)
-                                        .language(translationDto.getLanguage())
-                                        .title(translationDto.getTitle())
-                                        .description(translationDto.getDescription())
-                                        .build()
-                        );
-                    }
-                }
-            }
-        }
+                List<LessonTranslation> lessonTranslations = lessonDto.getTranslations()
+                        != null ? lessonDto.getTranslations().stream()
+                        .map(t -> LessonTranslation.builder()
+                                .lesson(lesson)
+                                .language(t.getLanguage())
+                                .title(t.getTitle())
+                                .description(t.getDescription())
+                                .build())
+                        .toList() : List.of();
 
-        translations = lessonTranslationRepository.saveAll(translations);
-
-        lessonIndex = 0;
-        for (ModuleCreateRequestDto moduleDto : moduleDtos) {
-            for (LessonCreateRequestDto lessonDto : moduleDto.getLessons()) {
-                Lesson lesson = savedLessons.get(lessonIndex++);
-                List<LessonTranslation> lessonTranslations = translations.stream()
-                        .filter(t -> t.getLesson().equals(lesson))
-                        .toList();
+                translations.addAll(lessonTranslations);
                 lesson.setTranslations(lessonTranslations);
             }
         }
+
+        lessonTranslationRepository.saveAll(translations);
     }
 
     @Override
+    @AllAspect
     public List<LessonTranslation> findByLessonId(UUID lessonId) {
         return lessonTranslationRepository.findLessonTranslationById((lessonId));
     }

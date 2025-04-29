@@ -14,20 +14,17 @@ import uz.consortgroup.course_service.entity.Course;
 import uz.consortgroup.course_service.entity.CourseTranslation;
 import uz.consortgroup.course_service.entity.Lesson;
 import uz.consortgroup.course_service.entity.Module;
-import uz.consortgroup.course_service.entity.Resource;
 import uz.consortgroup.course_service.mapper.CourseMapper;
 import uz.consortgroup.course_service.mapper.CourseTranslationMapper;
 import uz.consortgroup.course_service.mapper.LessonMapper;
 import uz.consortgroup.course_service.mapper.ModuleMapper;
 import uz.consortgroup.course_service.mapper.ModuleTranslationMapper;
 import uz.consortgroup.course_service.repository.CourseRepository;
+import uz.consortgroup.course_service.service.course.translation.CourseTranslationService;
 import uz.consortgroup.course_service.service.lesson.LessonService;
 import uz.consortgroup.course_service.service.lesson.LessonTranslationService;
 import uz.consortgroup.course_service.service.module.ModuleService;
 import uz.consortgroup.course_service.service.module.ModuleTranslationService;
-import uz.consortgroup.course_service.service.resourse.ResourceService;
-import uz.consortgroup.course_service.service.resourse.ResourceTranslationService;
-import uz.consortgroup.course_service.service.course.translation.CourseTranslationService;
 
 import java.util.List;
 
@@ -36,16 +33,17 @@ import java.util.List;
 @Slf4j
 public class CourseServiceImpl implements CourseService {
     private final CourseRepository courseRepository;
-    private final CourseMapper courseMapper;
     private final CourseTranslationMapper courseTranslationMapper;
-    private final ModuleService moduleService;
-    private final ModuleMapper moduleMapper;
     private final ModuleTranslationMapper moduleTranslationMapper;
-    private final LessonService lessonService;
-    private final LessonMapper lessonMapper;
     private final CourseTranslationService courseTranslationService;
     private final ModuleTranslationService moduleTranslationService;
     private final LessonTranslationService lessonTranslationService;
+    private final CourseMapper courseMapper;
+    private final LessonService lessonService;
+    private final LessonMapper lessonMapper;
+    private final ModuleService moduleService;
+    private final ModuleMapper moduleMapper;
+
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -73,6 +71,12 @@ public class CourseServiceImpl implements CourseService {
                 .map(courseTranslationMapper::toResponseDto)
                 .toList());
 
+        mapModulesToResponseDto(response, savedModules);
+
+        return response;
+    }
+
+    private void mapModulesToResponseDto(CourseResponseDto response, List<Module> savedModules) {
         response.setModules(savedModules.stream()
                 .map(module -> {
                     ModuleResponseDto moduleDto = moduleMapper.toResponseDto(module);
@@ -85,7 +89,5 @@ public class CourseServiceImpl implements CourseService {
                             .toList());
                     return moduleDto;
                 }).toList());
-
-        return response;
     }
 }

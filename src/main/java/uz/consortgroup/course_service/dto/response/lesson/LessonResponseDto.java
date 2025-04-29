@@ -25,7 +25,5 @@ public class LessonResponseDto {
     private Boolean isPreview;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
     private List<LessonTranslationResponseDto> translations;
-    private List<ResourceResponseDto> resources;
 }

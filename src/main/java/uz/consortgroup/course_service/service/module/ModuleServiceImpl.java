@@ -10,7 +10,8 @@ import uz.consortgroup.course_service.dto.request.module.ModuleCreateRequestDto;
 import uz.consortgroup.course_service.entity.Course;
 import uz.consortgroup.course_service.entity.Module;
 import uz.consortgroup.course_service.repository.ModuleRepository;
-import jakarta.persistence.EntityManager;
+import uz.consortgroup.course_service.validator.CourseValidator;
+import uz.consortgroup.course_service.validator.ModuleValidator;
 
 import java.util.List;
 
@@ -19,25 +20,15 @@ import java.util.List;
 @Slf4j
 public class ModuleServiceImpl implements ModuleService {
     private final ModuleRepository moduleRepository;
-    private final EntityManager entityManager;
+    private final CourseValidator courseValidator;
+    private final ModuleValidator moduleValidator;
 
     @Override
     @Transactional(propagation = Propagation.MANDATORY)
     @AllAspect
     public List<Module> saveModules(List<ModuleCreateRequestDto> modulesDto, Course course) {
-        if (course.getId() == null) {
-            throw new IllegalStateException("Course must be persisted before saving modules");
-        }
-
-        if (modulesDto == null || modulesDto.isEmpty()) {
-            return List.of();
-        }
-
-        modulesDto.forEach(dto -> {
-            if (dto.getModuleName() == null || dto.getOrderPosition() == null) {
-                throw new IllegalArgumentException("Module name and order position must not be null");
-            }
-        });
+        courseValidator.validateCourse(course);
+        moduleValidator.validateModules(modulesDto);
 
         List<Module> modules = modulesDto.stream()
                 .map(dto -> Module.builder()

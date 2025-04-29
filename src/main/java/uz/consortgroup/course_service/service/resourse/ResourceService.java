@@ -1,7 +1,6 @@
 package uz.consortgroup.course_service.service.resourse;
 
 import uz.consortgroup.course_service.dto.request.module.ModuleCreateRequestDto;
-import uz.consortgroup.course_service.dto.request.resource.ResourceCreateRequestDto;
 import uz.consortgroup.course_service.entity.Lesson;
 import uz.consortgroup.course_service.entity.Resource;
 import uz.consortgroup.course_service.entity.enumeration.MimeType;
@@ -18,8 +17,6 @@ public interface ResourceService {
                     MimeType mimeType,
                     Integer orderPosition);
 
-
     List<Resource> createBulk(List<ModuleCreateRequestDto> moduleDtos, List<Lesson> lessons);
-
     List<Resource> saveAllResources(List<Resource> resources);
 }
