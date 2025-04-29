@@ -6,13 +6,11 @@ import org.springframework.transaction.annotation.Transactional;
 import uz.consortgroup.course_service.asspect.annotation.AllAspect;
 import uz.consortgroup.course_service.dto.request.lesson.LessonCreateRequestDto;
 import uz.consortgroup.course_service.dto.request.module.ModuleCreateRequestDto;
-import uz.consortgroup.course_service.dto.request.resource.ResourceCreateRequestDto;
 import uz.consortgroup.course_service.entity.Lesson;
 import uz.consortgroup.course_service.entity.Resource;
 import uz.consortgroup.course_service.entity.enumeration.MimeType;
 import uz.consortgroup.course_service.entity.enumeration.ResourceType;
 import uz.consortgroup.course_service.repository.ResourceRepository;
-import uz.consortgroup.course_service.repository.LessonRepository;
 import uz.consortgroup.course_service.service.lesson.LessonService;
 
 import java.util.ArrayList;
