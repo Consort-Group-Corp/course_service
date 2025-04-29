@@ -13,6 +13,7 @@ import uz.consortgroup.course_service.entity.enumeration.MimeType;
 import uz.consortgroup.course_service.entity.enumeration.ResourceType;
 import uz.consortgroup.course_service.repository.ResourceRepository;
 import uz.consortgroup.course_service.repository.LessonRepository;
+import uz.consortgroup.course_service.service.lesson.LessonService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,19 +23,13 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ResourceServiceImpl implements ResourceService {
     private final ResourceRepository resourceRepository;
-    private final LessonRepository lessonRepository;
+    private final LessonService lessonService;
 
     @Override
     @Transactional
     @AllAspect
-    public Resource create(UUID lessonId,
-                           ResourceType resourceType,
-                           String fileUrl,
-                           Long fileSize,
-                           MimeType mimeType,
-                           Integer orderPosition) {
-
-        Lesson lesson = lessonRepository.getReferenceById(lessonId);
+    public Resource create(UUID lessonId, ResourceType resourceType, String fileUrl, Long fileSize, MimeType mimeType, Integer orderPosition) {
+        Lesson lesson = lessonService.getLessonEntity(lessonId);
         Resource res = Resource.builder()
                 .lesson(lesson)
                 .resourceType(resourceType)

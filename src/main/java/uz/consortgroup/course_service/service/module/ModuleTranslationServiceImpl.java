@@ -3,6 +3,7 @@ package uz.consortgroup.course_service.service.module;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uz.consortgroup.course_service.asspect.annotation.AllAspect;
 import uz.consortgroup.course_service.asspect.annotation.LoggingAspectAfterMethod;
 import uz.consortgroup.course_service.asspect.annotation.LoggingAspectBeforeMethod;
 import uz.consortgroup.course_service.dto.request.module.ModuleCreateRequestDto;
@@ -45,6 +46,7 @@ public class ModuleTranslationServiceImpl implements ModuleTranslationService {
     }
 
     @Override
+    @AllAspect
     public List<ModuleTranslation> findByModuleId(UUID moduleId) {
         return translationRepository.findByModuleId(moduleId);
     }

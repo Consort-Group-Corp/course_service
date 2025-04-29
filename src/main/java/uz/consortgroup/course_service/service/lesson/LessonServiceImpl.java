@@ -48,11 +48,13 @@ public class LessonServiceImpl implements LessonService {
 
 
     @Override
+    @AllAspect
     public List<Lesson> findByModuleId(UUID moduleId) {
         return lessonRepository.findAllByModuleId(moduleId);
     }
 
     @Override
+    @AllAspect
     public Lesson getLessonEntity(UUID lessonId) {
         return lessonRepository.findById(lessonId)
                 .orElseThrow(() -> new EntityNotFoundException("Lesson not found"));

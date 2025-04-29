@@ -10,7 +10,6 @@ import uz.consortgroup.course_service.dto.request.module.ModuleCreateRequestDto;
 import uz.consortgroup.course_service.entity.Course;
 import uz.consortgroup.course_service.entity.Module;
 import uz.consortgroup.course_service.repository.ModuleRepository;
-import jakarta.persistence.EntityManager;
 
 import java.util.List;
 
@@ -19,7 +18,6 @@ import java.util.List;
 @Slf4j
 public class ModuleServiceImpl implements ModuleService {
     private final ModuleRepository moduleRepository;
-    private final EntityManager entityManager;
 
     @Override
     @Transactional(propagation = Propagation.MANDATORY)

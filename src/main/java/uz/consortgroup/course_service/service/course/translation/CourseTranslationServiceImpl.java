@@ -35,6 +35,7 @@ public class CourseTranslationServiceImpl implements CourseTranslationService {
     }
 
     @Override
+    @AllAspect
     public List<CourseTranslation> findByCourseId(UUID courseId) {
         return courseTranslationRepo.findByCourseId(courseId);
     }
