@@ -1,6 +1,5 @@
 package uz.consortgroup.course_service.service.lesson;
 
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,6 +7,7 @@ import uz.consortgroup.course_service.asspect.annotation.AllAspect;
 import uz.consortgroup.course_service.dto.request.module.ModuleCreateRequestDto;
 import uz.consortgroup.course_service.entity.Lesson;
 import uz.consortgroup.course_service.entity.Module;
+import uz.consortgroup.course_service.exception.LessonNotFoundException;
 import uz.consortgroup.course_service.repository.LessonRepository;
 
 import java.util.ArrayList;
@@ -57,6 +57,6 @@ public class LessonServiceImpl implements LessonService {
     @AllAspect
     public Lesson getLessonEntity(UUID lessonId) {
         return lessonRepository.findById(lessonId)
-                .orElseThrow(() -> new EntityNotFoundException("Lesson not found"));
+                .orElseThrow(() -> new LessonNotFoundException("Lesson not found"));
     }
 }

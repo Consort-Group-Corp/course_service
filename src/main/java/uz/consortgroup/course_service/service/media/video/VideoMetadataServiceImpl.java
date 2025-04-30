@@ -1,4 +1,4 @@
-package uz.consortgroup.course_service.service.video;
+package uz.consortgroup.course_service.service.media.video;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

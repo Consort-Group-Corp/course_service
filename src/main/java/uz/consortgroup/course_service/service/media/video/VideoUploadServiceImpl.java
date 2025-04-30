@@ -1,4 +1,4 @@
-package uz.consortgroup.course_service.service.video;
+package uz.consortgroup.course_service.service.media.video;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -11,9 +11,10 @@ import uz.consortgroup.course_service.dto.response.video.VideoUploadResponseDto;
 import uz.consortgroup.course_service.entity.Lesson;
 import uz.consortgroup.course_service.entity.enumeration.MimeType;
 import uz.consortgroup.course_service.service.lesson.LessonService;
+import uz.consortgroup.course_service.service.media.processor.video.BulkVideoUploadProcessor;
+import uz.consortgroup.course_service.service.media.processor.video.VideoUploadProcessor;
 import uz.consortgroup.course_service.service.storage.FileStorageService;
-import uz.consortgroup.course_service.service.video.processor.BulkVideoUploadProcessor;
-import uz.consortgroup.course_service.service.video.processor.VideoUploadProcessor;
+
 
 import java.util.List;
 import java.util.UUID;
@@ -38,7 +39,7 @@ public class VideoUploadServiceImpl implements VideoUploadService {
         String url = storage.store(courseId, lessonId, dto.getVideo());
         MimeType mimeType = MimeType.fromContentType(dto.getVideo().getContentType());
 
-        return videoUploadProcessor.processSingleUpload(lessonId, courseId, dto, url, mimeType);
+        return videoUploadProcessor.processSingle(lessonId, dto, url, mimeType);
     }
 
     @Override

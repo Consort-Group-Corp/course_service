@@ -15,9 +15,8 @@ import uz.consortgroup.course_service.dto.request.video.BulkVideoUploadRequestDt
 import uz.consortgroup.course_service.dto.request.video.VideoUploadRequestDto;
 import uz.consortgroup.course_service.dto.response.video.BulkVideoUploadResponseDto;
 import uz.consortgroup.course_service.dto.response.video.VideoUploadResponseDto;
-import uz.consortgroup.course_service.service.video.VideoUploadService;
+import uz.consortgroup.course_service.service.media.video.VideoUploadService;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController
