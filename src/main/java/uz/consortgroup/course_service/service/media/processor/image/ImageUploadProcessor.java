@@ -2,7 +2,9 @@ package uz.consortgroup.course_service.service.media.processor.image;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import uz.consortgroup.course_service.dto.request.image.BulkImageUploadRequestDto;
 import uz.consortgroup.course_service.dto.request.image.ImageUploadRequestDto;
+import uz.consortgroup.course_service.dto.response.image.BulkImageUploadResponseDto;
 import uz.consortgroup.course_service.dto.response.image.ImageUploadResponseDto;
 import uz.consortgroup.course_service.entity.Resource;
 import uz.consortgroup.course_service.entity.ResourceTranslation;
@@ -18,25 +20,32 @@ import java.util.UUID;
 
 @Service
 @Slf4j
-public class ImageUploadProcessor extends AbstractMediaUploadProcessor<ImageUploadRequestDto, ImageUploadResponseDto, Void> {
+public class ImageUploadProcessor extends AbstractMediaUploadProcessor<ImageUploadRequestDto, ImageUploadResponseDto,
+        BulkImageUploadRequestDto, BulkImageUploadResponseDto> {
+
     public ImageUploadProcessor(ResourceService resourceService, ResourceTranslationService translationService, ResourceTranslationMapper translationMapper) {
         super(resourceService, translationService, translationMapper);
     }
 
     @Override
-    protected Resource createResource(UUID lessonId, ImageUploadRequestDto dto, String fileUrl, MimeType mimeType) {
+    protected List<ImageUploadRequestDto> extractDtos(BulkImageUploadRequestDto bulkDto) {
+        throw new UnsupportedOperationException("This method is not used in single upload processor");
+    }
+
+    @Override
+    protected Resource createResource(UUID lessonId, ImageUploadRequestDto dto, String fileUrl, MimeType mimeType, long fileSize) {
         return resourceService.create(
                 lessonId,
                 ResourceType.IMAGE,
                 fileUrl,
-                dto.getImage().getSize(),
+                fileSize,
                 mimeType,
                 dto.getOrderPosition()
         );
     }
 
     @Override
-    protected List<Resource> prepareResources(UUID lessonId, List<ImageUploadRequestDto> dtos, List<String> fileUrls) {
+    protected List<Resource> prepareResources(UUID lessonId, List<ImageUploadRequestDto> dtos, List<String> fileUrls, List<MimeType> mimeTypes, List<Long> fileSizes) {
         throw new UnsupportedOperationException("This method is not used in single upload processor");
     }
 
@@ -64,11 +73,7 @@ public class ImageUploadProcessor extends AbstractMediaUploadProcessor<ImageUplo
     }
 
     @Override
-    protected Void buildBulkResponse(List<Resource> resources, List<ImageUploadRequestDto> dtos) {
+    protected BulkImageUploadResponseDto buildBulkResponse(List<Resource> resources, List<ImageUploadRequestDto> dtos) {
         throw new UnsupportedOperationException("This method is not used in single upload processor");
-    }
-
-    public ImageUploadResponseDto processSingleUpload(UUID lessonId, ImageUploadRequestDto dto, String fileUrl, MimeType mimeType) {
-        return processSingle(lessonId, dto, fileUrl, mimeType);
     }
 }

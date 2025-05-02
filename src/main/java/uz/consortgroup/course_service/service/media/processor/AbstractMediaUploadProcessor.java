@@ -14,30 +14,45 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public abstract class AbstractMediaUploadProcessor<ReqDto, SingleRes, BulkRes> {
+public abstract class AbstractMediaUploadProcessor<
+        SingleRequestDto,
+        SingleResponseDto,
+        BulkRequestDto,
+        BulkResponseDto> implements MediaUploadProcessor<SingleRequestDto, SingleResponseDto>,
+        BulkMediaUploadProcessor<SingleRequestDto, BulkRequestDto, BulkResponseDto> {
     protected final ResourceService resourceService;
     protected final ResourceTranslationService translationService;
     protected final ResourceTranslationMapper translationMapper;
 
-    public SingleRes processSingle(UUID lessonId, ReqDto dto, String fileUrl, MimeType mimeType) {
-        Resource res = createResource(lessonId, dto, fileUrl, mimeType);
+    @Override
+    public SingleResponseDto processSingle(UUID lessonId, SingleRequestDto dto, String fileUrl, MimeType mimeType, long fileSize) {
+        Resource res = createResource(lessonId, dto, fileUrl, mimeType, fileSize);
         saveTranslations(dto, res);
-        return buildSingleResponse(res, dto); // Передаем dto
+        return buildSingleResponse(res, dto);
     }
 
-    public BulkRes processBulk(UUID lessonId, List<ReqDto> dtos, List<String> fileUrls) {
-        List<Resource> resources = prepareResources(lessonId, dtos, fileUrls);
+    @Override
+    public BulkResponseDto processBulkUpload(UUID lessonId, BulkRequestDto bulkDto, List<String> fileUrls, List<MimeType> mimeTypes, List<Long> fileSizes) {
+        List<SingleRequestDto> dtos = extractDtos(bulkDto);
+        List<Resource> resources = prepareResources(lessonId, dtos, fileUrls, mimeTypes, fileSizes);
         resources = resourceService.saveAllResources(resources);
         saveAllTranslations(dtos, resources);
-        return buildBulkResponse(resources, dtos); // Передаем dtos
+        return buildBulkResponse(resources, dtos);
     }
 
-    protected abstract Resource createResource(UUID lessonId, ReqDto dto, String fileUrl, MimeType mimeType);
-    protected abstract List<Resource> prepareResources(UUID lessonId, List<ReqDto> dtos, List<String> fileUrls);
-    protected abstract void saveTranslations(ReqDto dto, Resource resource);
-    protected abstract void saveAllTranslations(List<ReqDto> dtos, List<Resource> resources);
-    protected abstract SingleRes buildSingleResponse(Resource resource, ReqDto dto); // Обновленная сигнатура
-    protected abstract BulkRes buildBulkResponse(List<Resource> resources, List<ReqDto> dtos); // Обновленная сигнатура
+    protected abstract List<SingleRequestDto> extractDtos(BulkRequestDto bulkDto);
+
+    protected abstract Resource createResource(UUID lessonId, SingleRequestDto dto, String fileUrl, MimeType mimeType, long fileSize);
+
+    protected abstract List<Resource> prepareResources(UUID lessonId, List<SingleRequestDto> dtos, List<String> fileUrls, List<MimeType> mimeTypes, List<Long> fileSizes);
+
+    protected abstract void saveTranslations(SingleRequestDto dto, Resource resource);
+
+    protected abstract void saveAllTranslations(List<SingleRequestDto> dtos, List<Resource> resources);
+
+    protected abstract SingleResponseDto buildSingleResponse(Resource resource, SingleRequestDto dto);
+
+    protected abstract BulkResponseDto buildBulkResponse(List<Resource> resources, List<SingleRequestDto> dtos);
 
     protected List<ResourceTranslationResponseDto> mapTranslations(List<ResourceTranslation> translations) {
         if (translations == null || translations.isEmpty()) return List.of();

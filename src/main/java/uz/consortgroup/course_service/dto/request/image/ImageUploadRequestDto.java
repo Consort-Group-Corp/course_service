@@ -15,11 +15,7 @@ import java.util.List;
 @Data
 @Builder
 public class ImageUploadRequestDto {
-    @NotNull(message = "Image is required")
-    private MultipartFile image;
-
     @NotNull(message = "Order position is required")
     private Integer orderPosition;
-
     private List<ResourceTranslationRequestDto> translations;
 }

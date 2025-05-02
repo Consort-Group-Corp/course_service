@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 import uz.consortgroup.course_service.dto.request.resource.ResourceTranslationRequestDto;
 
 import java.util.List;
@@ -15,8 +14,6 @@ import java.util.List;
 @Data
 @Builder
 public class VideoUploadRequestDto {
-    @NotNull(message = "File is required")
-    private MultipartFile video;
     @NotNull(message = "Duration is required")
     private Integer duration;
     private String resolution;

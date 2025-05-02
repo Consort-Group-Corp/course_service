@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import uz.consortgroup.course_service.config.properties.StorageProperties;
+import uz.consortgroup.course_service.dto.request.image.BulkImageUploadRequestDto;
+import uz.consortgroup.course_service.dto.request.video.BulkVideoUploadRequestDto;
 import uz.consortgroup.course_service.entity.enumeration.FileType;
 import uz.consortgroup.course_service.exception.EmptyFileException;
 import uz.consortgroup.course_service.exception.FileSizeLimitExceededException;
@@ -25,6 +27,7 @@ public class FileStorageValidator {
     private final StorageProperties storageProperties;
     private Map<String, FileType> mimeTypeToFileType;
     private Map<String, FileType> extensionToFileType;
+    private final Map<Class<?>, BulkValidationStrategy<?>> bulkValidationStrategies = new HashMap<>();
 
     @PostConstruct
     public void init() {
@@ -50,6 +53,19 @@ public class FileStorageValidator {
                 }
             }
         }
+
+        bulkValidationStrategies.put(BulkImageUploadRequestDto.class, new ImageBulkValidationStrategy());
+        bulkValidationStrategies.put(BulkVideoUploadRequestDto.class, new VideoBulkValidationStrategy());
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> void validateBulk(T dto, List<MultipartFile> files) {
+        BulkValidationStrategy<T> strategy = (BulkValidationStrategy<T>) bulkValidationStrategies.get(dto.getClass());
+        if (strategy == null) {
+            log.error("No validation strategy found for DTO type: {}", dto.getClass().getName());
+            throw new IllegalArgumentException("No validation strategy for DTO type: " + dto.getClass().getName());
+        }
+        strategy.validate(dto, files);
     }
 
     public void validateMultipleFiles(List<MultipartFile> files) {

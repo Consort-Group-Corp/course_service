@@ -21,28 +21,36 @@ import java.util.List;
 import java.util.UUID;
 
 @Component
-public class BulkImageUploadProcessor extends AbstractMediaUploadProcessor<ImageUploadRequestDto, Void, BulkImageUploadResponseDto> {
+public class BulkImageUploadProcessor extends AbstractMediaUploadProcessor<ImageUploadRequestDto, ImageUploadResponseDto,
+        BulkImageUploadRequestDto, BulkImageUploadResponseDto> {
+
     public BulkImageUploadProcessor(ResourceService resourceService, ResourceTranslationService translationService, ResourceTranslationMapper translationMapper) {
         super(resourceService, translationService, translationMapper);
     }
 
     @Override
-    protected Resource createResource(UUID lessonId, ImageUploadRequestDto dto, String fileUrl, MimeType mimeType) {
+    protected List<ImageUploadRequestDto> extractDtos(BulkImageUploadRequestDto bulkDto) {
+        return bulkDto.getImages();
+    }
+
+    @Override
+    protected Resource createResource(UUID lessonId, ImageUploadRequestDto dto, String fileUrl, MimeType mimeType, long fileSize) {
         throw new UnsupportedOperationException("This method is not used in bulk upload processor");
     }
 
     @Override
-    protected List<Resource> prepareResources(UUID lessonId, List<ImageUploadRequestDto> dtos, List<String> fileUrls) {
+    protected List<Resource> prepareResources(UUID lessonId, List<ImageUploadRequestDto> dtos, List<String> fileUrls, List<MimeType> mimeTypes, List<Long> fileSizes) {
         List<Resource> resources = new ArrayList<>();
         for (int i = 0; i < dtos.size(); i++) {
             ImageUploadRequestDto img = dtos.get(i);
-            String url = fileUrls.get(i);
-            MimeType mimeType = MimeType.fromContentType(img.getImage().getContentType());
+            String fileUrl = fileUrls.get(i);
+            MimeType mimeType = mimeTypes.get(i);
+            long fileSize = fileSizes.get(i);
             resources.add(Resource.builder()
                     .lesson(Lesson.builder().id(lessonId).build())
                     .resourceType(ResourceType.IMAGE)
-                    .fileUrl(url)
-                    .fileSize(img.getImage().getSize())
+                    .fileUrl(fileUrl)
+                    .fileSize(fileSize)
                     .mimeType(mimeType)
                     .orderPosition(img.getOrderPosition())
                     .build());
@@ -76,7 +84,7 @@ public class BulkImageUploadProcessor extends AbstractMediaUploadProcessor<Image
     }
 
     @Override
-    protected Void buildSingleResponse(Resource resource, ImageUploadRequestDto dto) {
+    protected ImageUploadResponseDto buildSingleResponse(Resource resource, ImageUploadRequestDto dto) {
         throw new UnsupportedOperationException("This method is not used in bulk upload processor");
     }
 
@@ -96,9 +104,5 @@ public class BulkImageUploadProcessor extends AbstractMediaUploadProcessor<Image
         return BulkImageUploadResponseDto.builder()
                 .images(imageDtos)
                 .build();
-    }
-
-    public BulkImageUploadResponseDto processBulkUpload(UUID lessonId, BulkImageUploadRequestDto dto, List<String> fileUrls) {
-        return processBulk(lessonId, dto.getImages(), fileUrls);
     }
 }

@@ -1,7 +1,9 @@
 package uz.consortgroup.course_service.service.media.processor.video;
 
 import org.springframework.stereotype.Component;
+import uz.consortgroup.course_service.dto.request.video.BulkVideoUploadRequestDto;
 import uz.consortgroup.course_service.dto.request.video.VideoUploadRequestDto;
+import uz.consortgroup.course_service.dto.response.video.BulkVideoUploadResponseDto;
 import uz.consortgroup.course_service.dto.response.video.VideoUploadResponseDto;
 import uz.consortgroup.course_service.entity.Resource;
 import uz.consortgroup.course_service.entity.ResourceTranslation;
@@ -10,7 +12,7 @@ import uz.consortgroup.course_service.entity.enumeration.MimeType;
 import uz.consortgroup.course_service.entity.enumeration.ResourceType;
 import uz.consortgroup.course_service.mapper.ResourceTranslationMapper;
 import uz.consortgroup.course_service.service.media.processor.AbstractMediaUploadProcessor;
-import uz.consortgroup.course_service.service.media.video.VideoMetadataService;
+import uz.consortgroup.course_service.service.media.video.metadate.VideoMetadataService;
 import uz.consortgroup.course_service.service.resourse.ResourceService;
 import uz.consortgroup.course_service.service.resourse.ResourceTranslationService;
 
@@ -18,7 +20,9 @@ import java.util.List;
 import java.util.UUID;
 
 @Component
-public class VideoUploadProcessor extends AbstractMediaUploadProcessor<VideoUploadRequestDto, VideoUploadResponseDto, Void> {
+public class VideoUploadProcessor extends AbstractMediaUploadProcessor<VideoUploadRequestDto, VideoUploadResponseDto,
+        BulkVideoUploadRequestDto, BulkVideoUploadResponseDto> {
+
     private final VideoMetadataService videoMetadataService;
 
     public VideoUploadProcessor(ResourceService resourceService, ResourceTranslationService translationService, ResourceTranslationMapper translationMapper, VideoMetadataService videoMetadataService) {
@@ -27,19 +31,24 @@ public class VideoUploadProcessor extends AbstractMediaUploadProcessor<VideoUplo
     }
 
     @Override
-    protected Resource createResource(UUID lessonId, VideoUploadRequestDto dto, String fileUrl, MimeType mimeType) {
+    protected List<VideoUploadRequestDto> extractDtos(BulkVideoUploadRequestDto bulkDto) {
+        throw new UnsupportedOperationException("This method is not used in single upload processor");
+    }
+
+    @Override
+    protected Resource createResource(UUID lessonId, VideoUploadRequestDto dto, String fileUrl, MimeType mimeType, long fileSize) {
         return resourceService.create(
                 lessonId,
                 ResourceType.VIDEO,
                 fileUrl,
-                dto.getVideo().getSize(),
+                fileSize,
                 mimeType,
                 dto.getOrderPosition()
         );
     }
 
     @Override
-    protected List<Resource> prepareResources(UUID lessonId, List<VideoUploadRequestDto> dtos, List<String> fileUrls) {
+    protected List<Resource> prepareResources(UUID lessonId, List<VideoUploadRequestDto> dtos, List<String> fileUrls, List<MimeType> mimeTypes, List<Long> fileSizes) {
         throw new UnsupportedOperationException("This method is not used in single upload processor");
     }
 
@@ -78,12 +87,7 @@ public class VideoUploadProcessor extends AbstractMediaUploadProcessor<VideoUplo
     }
 
     @Override
-    protected Void buildBulkResponse(List<Resource> resources, List<VideoUploadRequestDto> dtos) {
+    protected BulkVideoUploadResponseDto buildBulkResponse(List<Resource> resources, List<VideoUploadRequestDto> dtos) {
         throw new UnsupportedOperationException("This method is not used in single upload processor");
-    }
-
-
-    public VideoUploadResponseDto processSingleUpload(UUID lessonId, UUID courseId, VideoUploadRequestDto dto, String fileUrl, MimeType mimeType) {
-        return processSingle(lessonId, dto, fileUrl, mimeType);
     }
 }
