@@ -1,4 +1,4 @@
-package uz.consortgroup.course_service.service.video;
+package uz.consortgroup.course_service.service.media.video.metadate;
 
 import uz.consortgroup.course_service.entity.VideoMetaData;
 

@@ -1,11 +1,14 @@
 package uz.consortgroup.course_service.service.storage;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
-import uz.consortgroup.course_service.asspect.annotation.AllAspect;
-import uz.consortgroup.course_service.config.properties.VideoStorageProperties;
+import uz.consortgroup.course_service.config.properties.StorageProperties;
+import uz.consortgroup.course_service.entity.enumeration.FileType;
+import uz.consortgroup.course_service.exception.FileStorageException;
+import uz.consortgroup.course_service.validator.FileStorageValidator;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,47 +21,45 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class LocalFileStorageService implements FileStorageService {
-    private final VideoStorageProperties props;
+    private final StorageProperties props;
+    private final FileStorageValidator validator;
 
     @Override
-    @AllAspect
     public String store(UUID courseId, UUID lessonId, MultipartFile file) {
-        validateFile(file);
-        return storeFile(courseId, lessonId, file);
+        log.info("Storing file for courseId: {}, lessonId: {}", courseId, lessonId);
+        FileType fileType = validator.determineFileType(file);
+        determinedFileTypeLog(fileType);
+        validator.validateFile(file, fileType);
+        return storeFile(courseId, lessonId, file, fileType);
     }
 
+
     @Override
-    @AllAspect
     public List<String> storeMultiple(UUID courseId, UUID lessonId, List<MultipartFile> files) {
-        if (files.isEmpty()) {
-            throw new RuntimeException("Список файлов пуст");
-        }
+        log.info("Storing multiple files for courseId: {}, lessonId: {}", courseId, lessonId);
+        validator.validateMultipleFiles(files);
 
         List<String> filePaths = new ArrayList<>();
         for (MultipartFile file : files) {
-            validateFile(file);
-            filePaths.add(storeFile(courseId, lessonId, file));
+            FileType fileType = validator.determineFileType(file);
+            determinedFileTypeLog(fileType);
+            validator.validateFile(file, fileType);
+            filePaths.add(storeFile(courseId, lessonId, file, fileType));
         }
+        log.info("Stored {} files for courseId: {}, lessonId: {}", filePaths.size(), courseId, lessonId);
         return filePaths;
     }
 
-    private void validateFile(MultipartFile file) {
-        if (file.isEmpty()) {
-            throw new RuntimeException("Файл пуст");
-        }
-
-        if (file.getSize() > props.getMaxFileSize().toBytes()) {
-            throw new RuntimeException("Размер файла превышает допустимый лимит: " + props.getMaxFileSize());
-        }
-    }
-
-    private String storeFile(UUID courseId, UUID lessonId, MultipartFile file) {
+    private String storeFile(UUID courseId, UUID lessonId, MultipartFile file, FileType type) {
         String originalFilename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        String extension = getFileExtension(originalFilename);
-        String filename = UUID.randomUUID() + extension;
+        String extension = getFileExtension(originalFilename); // Проверка на пустое расширение уже выполнена в validator
 
-        Path targetPath = prepareTargetPath(courseId, lessonId, filename);
+        String filename = UUID.randomUUID() + extension;
+        log.debug("Generated filename: {}", filename);
+
+        Path targetPath = prepareTargetPath(courseId, lessonId, filename, type);
         saveFileToDisk(file, targetPath);
 
         return formatMediaPath(courseId, lessonId, filename);
@@ -69,28 +70,38 @@ public class LocalFileStorageService implements FileStorageService {
         return dotIndex > 0 ? filename.substring(dotIndex) : "";
     }
 
-    private Path prepareTargetPath(UUID courseId, UUID lessonId, String filename) {
-        Path directory = props.getLocation()
+    private Path prepareTargetPath(UUID courseId, UUID lessonId, String filename, FileType type) {
+        Path directory = props.getFileType(type).getLocation(props.getBaseDir())
                 .resolve(courseId.toString())
                 .resolve(lessonId.toString());
+        log.debug("Prepared target directory: {}", directory);
 
         try {
             Files.createDirectories(directory);
             return directory.resolve(filename);
         } catch (IOException e) {
-            throw new RuntimeException("Не удалось создать директорию для файла", e);
+            log.error("Failed to create directory: {}", directory, e);
+            throw new FileStorageException("Failed to create directory for file", e);
         }
     }
 
     private void saveFileToDisk(MultipartFile file, Path targetPath) {
         try {
             Files.copy(file.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
+            log.debug("File saved to: {}", targetPath);
         } catch (IOException e) {
-            throw new RuntimeException("Не удалось сохранить файл " + targetPath.getFileName(), e);
+            log.error("Failed to save file: {}", targetPath.getFileName(), e);
+            throw new FileStorageException("Failed to save file: " + targetPath.getFileName(), e);
         }
     }
 
     private String formatMediaPath(UUID courseId, UUID lessonId, String filename) {
-        return "/media/" + courseId + "/" + lessonId + "/" + filename;
+        String path = "/media/" + courseId + "/" + lessonId + "/" + filename;
+        log.debug("Formatted media path: {}", path);
+        return path;
+    }
+
+    private void determinedFileTypeLog(FileType fileType) {
+        log.debug("Determined file type: {}", fileType);
     }
 }
