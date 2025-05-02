@@ -15,11 +15,10 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public abstract class AbstractMediaUploadProcessor<
-        SingleRequestDto,
-        SingleResponseDto,
-        BulkRequestDto,
-        BulkResponseDto> implements MediaUploadProcessor<SingleRequestDto, SingleResponseDto>,
+        SingleRequestDto, SingleResponseDto, BulkRequestDto, BulkResponseDto>
+        implements MediaUploadProcessor<SingleRequestDto, SingleResponseDto>,
         BulkMediaUploadProcessor<SingleRequestDto, BulkRequestDto, BulkResponseDto> {
+
     protected final ResourceService resourceService;
     protected final ResourceTranslationService translationService;
     protected final ResourceTranslationMapper translationMapper;

@@ -6,7 +6,7 @@ import uz.consortgroup.course_service.dto.request.video.VideoUploadRequestDto;
 import uz.consortgroup.course_service.dto.response.video.BulkVideoUploadResponseDto;
 import uz.consortgroup.course_service.dto.response.video.VideoUploadResponseDto;
 import uz.consortgroup.course_service.service.lesson.LessonService;
-import uz.consortgroup.course_service.service.media.processor.AbstractMediaUploadService;
+import uz.consortgroup.course_service.service.media.AbstractMediaUploadService;
 import uz.consortgroup.course_service.service.media.processor.video.BulkVideoUploadProcessor;
 import uz.consortgroup.course_service.service.media.processor.video.VideoUploadProcessor;
 import uz.consortgroup.course_service.service.storage.FileStorageService;

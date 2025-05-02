@@ -1,4 +1,4 @@
-package uz.consortgroup.course_service.service.media.processor;
+package uz.consortgroup.course_service.service.media;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,6 +8,7 @@ import uz.consortgroup.course_service.entity.Lesson;
 import uz.consortgroup.course_service.entity.enumeration.FileType;
 import uz.consortgroup.course_service.entity.enumeration.MimeType;
 import uz.consortgroup.course_service.service.lesson.LessonService;
+import uz.consortgroup.course_service.service.media.processor.AbstractMediaUploadProcessor;
 import uz.consortgroup.course_service.service.storage.FileStorageService;
 import uz.consortgroup.course_service.validator.FileStorageValidator;
 
