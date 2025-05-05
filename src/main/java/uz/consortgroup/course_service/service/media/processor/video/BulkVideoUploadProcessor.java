@@ -16,7 +16,7 @@ import uz.consortgroup.course_service.mapper.ResourceTranslationMapper;
 import uz.consortgroup.course_service.service.media.processor.AbstractMediaUploadProcessor;
 import uz.consortgroup.course_service.service.media.video.metadate.VideoMetadataService;
 import uz.consortgroup.course_service.service.resourse.ResourceService;
-import uz.consortgroup.course_service.service.resourse.ResourceTranslationService;
+import uz.consortgroup.course_service.service.resourse.translation.ResourceTranslationService;
 
 import java.util.ArrayList;
 import java.util.List;

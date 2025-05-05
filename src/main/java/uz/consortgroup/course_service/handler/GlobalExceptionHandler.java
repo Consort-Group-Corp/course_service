@@ -1,5 +1,6 @@
 package uz.consortgroup.course_service.handler;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -9,10 +10,13 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import uz.consortgroup.course_service.exception.EmptyFileException;
 import uz.consortgroup.course_service.exception.FileSizeLimitExceededException;
 import uz.consortgroup.course_service.exception.LessonNotFoundException;
+import uz.consortgroup.course_service.exception.MismatchException;
 import uz.consortgroup.course_service.exception.UnsupportedFileExtensionException;
 import uz.consortgroup.course_service.exception.UnsupportedMimeTypeException;
 
@@ -71,6 +75,27 @@ public class GlobalExceptionHandler {
         log.error("Unexpected exception: ", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Internal server error", "Произошла непредвиденная ошибка"));
+    }
+
+    @ExceptionHandler(JsonParseException.class)
+    public ResponseEntity<ErrorResponse> handleJsonParseException(JsonParseException ex) {
+        log.error("JsonParseException: ", ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "JSON parse error", ex.getMessage()));
+    }
+
+    @ExceptionHandler(MissingServletRequestPartException.class)
+    public ResponseEntity<ErrorResponse> handleMissingServletRequestPartException(MissingServletRequestPartException ex) {
+        log.error("Missing request part: {}", ex.getRequestPartName(), ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(
+                        HttpStatus.BAD_REQUEST.value(), "Missing request part", "Required request part '" + ex.getRequestPartName() + "' is not present"));
+    }
+
+    @ExceptionHandler(MismatchException.class)
+    public ResponseEntity<ErrorResponse> handleMismatchException(MismatchException ex) {
+       log.error("MismatchException: ", ex);
+       return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+               .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Mismatch error", ex.getMessage()));
     }
 
 

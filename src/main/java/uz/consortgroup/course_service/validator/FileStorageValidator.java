@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import uz.consortgroup.course_service.config.properties.StorageProperties;
 import uz.consortgroup.course_service.dto.request.image.BulkImageUploadRequestDto;
+import uz.consortgroup.course_service.dto.request.pdf.BulkPdfFilesUploadRequestDto;
 import uz.consortgroup.course_service.dto.request.video.BulkVideoUploadRequestDto;
 import uz.consortgroup.course_service.entity.enumeration.FileType;
 import uz.consortgroup.course_service.exception.EmptyFileException;
@@ -56,6 +57,7 @@ public class FileStorageValidator {
 
         bulkValidationStrategies.put(BulkImageUploadRequestDto.class, new ImageBulkValidationStrategy());
         bulkValidationStrategies.put(BulkVideoUploadRequestDto.class, new VideoBulkValidationStrategy());
+        bulkValidationStrategies.put(BulkPdfFilesUploadRequestDto.class, new PdfBulkValidationStrategy());
     }
 
     @SuppressWarnings("unchecked")

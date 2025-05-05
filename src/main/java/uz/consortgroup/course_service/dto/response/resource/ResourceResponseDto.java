@@ -25,6 +25,5 @@ public class ResourceResponseDto {
     private Integer orderPosition;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
     private List<ResourceTranslationResponseDto> translations;
 }

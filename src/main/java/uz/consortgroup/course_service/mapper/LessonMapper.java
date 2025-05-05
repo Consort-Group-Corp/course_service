@@ -24,8 +24,6 @@ public interface LessonMapper {
             @Mapping(target = "translations",  source = "translations"),
     })
     LessonResponseDto toResponseDto(Lesson lesson);
-
     Lesson toEntity(LessonCreateRequestDto dto);
-
     List<LessonResponseDto> toResponseList(List<Lesson> lessons);
 }

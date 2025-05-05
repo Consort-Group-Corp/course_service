@@ -11,19 +11,18 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import uz.consortgroup.course_service.dto.request.course.CourseCreateRequestDto;
 import uz.consortgroup.course_service.dto.response.course.CourseResponseDto;
-import uz.consortgroup.course_service.service.course.CourseServiceImpl;
+import uz.consortgroup.course_service.service.course.CourseService;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/courses")
 @Validated
 public class CourseController {
-    private final CourseServiceImpl courseService;
+    private final CourseService courseService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CourseResponseDto create(@RequestBody @Valid CourseCreateRequestDto dto) {
-        System.out.println("DTO пришёл: " + dto);
         return courseService.create(dto);
     }
 }

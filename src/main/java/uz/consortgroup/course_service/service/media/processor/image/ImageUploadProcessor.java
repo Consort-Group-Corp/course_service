@@ -1,6 +1,5 @@
 package uz.consortgroup.course_service.service.media.processor.image;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uz.consortgroup.course_service.dto.request.image.BulkImageUploadRequestDto;
 import uz.consortgroup.course_service.dto.request.image.ImageUploadRequestDto;
@@ -13,13 +12,12 @@ import uz.consortgroup.course_service.entity.enumeration.ResourceType;
 import uz.consortgroup.course_service.mapper.ResourceTranslationMapper;
 import uz.consortgroup.course_service.service.media.processor.AbstractMediaUploadProcessor;
 import uz.consortgroup.course_service.service.resourse.ResourceService;
-import uz.consortgroup.course_service.service.resourse.ResourceTranslationService;
+import uz.consortgroup.course_service.service.resourse.translation.ResourceTranslationService;
 
 import java.util.List;
 import java.util.UUID;
 
 @Service
-@Slf4j
 public class ImageUploadProcessor extends AbstractMediaUploadProcessor<ImageUploadRequestDto, ImageUploadResponseDto,
         BulkImageUploadRequestDto, BulkImageUploadResponseDto> {
 

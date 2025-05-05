@@ -54,7 +54,7 @@ public class LocalFileStorageService implements FileStorageService {
 
     private String storeFile(UUID courseId, UUID lessonId, MultipartFile file, FileType type) {
         String originalFilename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
-        String extension = getFileExtension(originalFilename); // Проверка на пустое расширение уже выполнена в validator
+        String extension = getFileExtension(originalFilename);
 
         String filename = UUID.randomUUID() + extension;
         log.debug("Generated filename: {}", filename);

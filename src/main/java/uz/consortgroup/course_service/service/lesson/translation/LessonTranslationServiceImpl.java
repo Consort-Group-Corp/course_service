@@ -1,4 +1,4 @@
-package uz.consortgroup.course_service.service.lesson;
+package uz.consortgroup.course_service.service.lesson.translation;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

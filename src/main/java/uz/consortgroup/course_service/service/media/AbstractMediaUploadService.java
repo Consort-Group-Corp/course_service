@@ -46,6 +46,7 @@ public abstract class AbstractMediaUploadService<SingleRequestDto, SingleRespons
     public BulkResponseDto uploadBulk(UUID lessonId, BulkRequestDto dto, List<MultipartFile> files) {
         fileStorageValidator.validateMultipleFiles(files);
         fileStorageValidator.validateBulk(dto, files);
+
         Lesson lesson = getLesson(lessonId);
         UUID courseId = lesson.getModule().getCourse().getId();
 

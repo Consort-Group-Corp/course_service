@@ -1,4 +1,4 @@
-package uz.consortgroup.course_service.service.resourse;
+package uz.consortgroup.course_service.service.resourse.translation;
 
 import uz.consortgroup.course_service.dto.request.module.ModuleCreateRequestDto;
 import uz.consortgroup.course_service.dto.request.resource.ResourceTranslationRequestDto;
