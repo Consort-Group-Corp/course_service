@@ -22,9 +22,9 @@ import uz.consortgroup.course_service.mapper.ModuleTranslationMapper;
 import uz.consortgroup.course_service.repository.CourseRepository;
 import uz.consortgroup.course_service.service.course.translation.CourseTranslationService;
 import uz.consortgroup.course_service.service.lesson.LessonService;
-import uz.consortgroup.course_service.service.lesson.LessonTranslationService;
+import uz.consortgroup.course_service.service.lesson.translation.LessonTranslationService;
 import uz.consortgroup.course_service.service.module.ModuleService;
-import uz.consortgroup.course_service.service.module.ModuleTranslationService;
+import uz.consortgroup.course_service.service.module.translation.ModuleTranslationService;
 
 import java.util.List;
 

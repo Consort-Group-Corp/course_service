@@ -33,7 +33,6 @@ public class StorageProperties {
     }
 
     public FileTypeProperties getFileType(FileType fileType) {
-        // Преобразуем FileType в строку (например, FileType.VIDEO -> "video")
         String key = fileType.name().toLowerCase();
         return fileTypes.getOrDefault(key, defaultFileType);
     }

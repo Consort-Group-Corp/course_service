@@ -24,13 +24,10 @@ public class ResourceCreateRequestDto {
 
     @NotNull
     private String fileUrl;
-
     private Long fileSize;
-
     private MimeType mimeType;
 
     @NotNull
     private Integer orderPosition;
-
     private List<ResourceTranslationRequestDto> translations;
 }

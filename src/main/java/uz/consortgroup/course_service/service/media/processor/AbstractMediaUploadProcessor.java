@@ -7,7 +7,7 @@ import uz.consortgroup.course_service.entity.ResourceTranslation;
 import uz.consortgroup.course_service.entity.enumeration.MimeType;
 import uz.consortgroup.course_service.mapper.ResourceTranslationMapper;
 import uz.consortgroup.course_service.service.resourse.ResourceService;
-import uz.consortgroup.course_service.service.resourse.ResourceTranslationService;
+import uz.consortgroup.course_service.service.resourse.translation.ResourceTranslationService;
 
 import java.util.List;
 import java.util.UUID;

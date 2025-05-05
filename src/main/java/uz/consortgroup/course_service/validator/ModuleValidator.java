@@ -7,7 +7,6 @@ import java.util.List;
 
 @Component
 public class ModuleValidator {
-
     public void validateModules(List<ModuleCreateRequestDto> modulesDto) {
         if (modulesDto == null || modulesDto.isEmpty()) {
             return;
