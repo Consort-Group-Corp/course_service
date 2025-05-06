@@ -26,7 +26,6 @@ import uz.consortgroup.course_service.entity.enumeration.MimeType;
 import uz.consortgroup.course_service.entity.enumeration.ResourceType;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
