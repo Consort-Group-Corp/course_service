@@ -51,5 +51,4 @@
             BulkVideoUploadRequestDto metadata = objectMapper.readValue(metadataJson, BulkVideoUploadRequestDto.class);
             return videoUploadService.uploadBulk(lessonId, metadata, files);
         }
-
     }
