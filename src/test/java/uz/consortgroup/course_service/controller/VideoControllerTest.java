@@ -9,10 +9,10 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import uz.consortgroup.course_service.dto.request.video.BulkVideoUploadRequestDto;
-import uz.consortgroup.course_service.dto.request.video.VideoUploadRequestDto;
-import uz.consortgroup.course_service.dto.response.video.BulkVideoUploadResponseDto;
-import uz.consortgroup.course_service.dto.response.video.VideoUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.request.video.BulkVideoUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.request.video.VideoUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.response.video.BulkVideoUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.response.video.VideoUploadResponseDto;
 import uz.consortgroup.course_service.exception.MismatchException;
 import uz.consortgroup.course_service.service.media.video.VideoUploadService;
 

@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import uz.consortgroup.course_service.dto.request.image.BulkImageUploadRequestDto;
-import uz.consortgroup.course_service.dto.request.image.ImageUploadRequestDto;
-import uz.consortgroup.course_service.dto.response.image.BulkImageUploadResponseDto;
-import uz.consortgroup.course_service.dto.response.image.ImageUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.request.image.BulkImageUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.request.image.ImageUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.response.image.BulkImageUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.response.image.ImageUploadResponseDto;
 import uz.consortgroup.course_service.service.media.image.ImageService;
 
 import java.util.List;

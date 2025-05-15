@@ -4,11 +4,11 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.util.unit.DataSize;
-import uz.consortgroup.course_service.entity.enumeration.FileType;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import uz.consortgroup.core.api.v1.dto.enumeration.FileType;
 
 import java.nio.file.Path;
 import java.util.List;

@@ -22,10 +22,14 @@ configurations {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
 dependencies {
+    //public-api-dto
+    implementation("uz.consortgroup:public-api-dto:0.0.2")
+
     // Lombok
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")

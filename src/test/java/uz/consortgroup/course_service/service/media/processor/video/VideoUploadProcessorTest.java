@@ -6,16 +6,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uz.consortgroup.course_service.dto.request.resource.ResourceTranslationRequestDto;
-import uz.consortgroup.course_service.dto.request.video.BulkVideoUploadRequestDto;
-import uz.consortgroup.course_service.dto.request.video.VideoUploadRequestDto;
-import uz.consortgroup.course_service.dto.response.resource.ResourceTranslationResponseDto;
-import uz.consortgroup.course_service.dto.response.video.VideoUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.enumeration.MimeType;
+import uz.consortgroup.core.api.v1.dto.enumeration.ResourceType;
+import uz.consortgroup.core.api.v1.dto.request.resource.ResourceTranslationRequestDto;
+import uz.consortgroup.core.api.v1.dto.request.video.BulkVideoUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.request.video.VideoUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.response.resource.ResourceTranslationResponseDto;
+import uz.consortgroup.core.api.v1.dto.response.video.VideoUploadResponseDto;
 import uz.consortgroup.course_service.entity.Resource;
 import uz.consortgroup.course_service.entity.ResourceTranslation;
 import uz.consortgroup.course_service.entity.VideoMetaData;
-import uz.consortgroup.course_service.entity.enumeration.MimeType;
-import uz.consortgroup.course_service.entity.enumeration.ResourceType;
 import uz.consortgroup.course_service.mapper.ResourceTranslationMapper;
 import uz.consortgroup.course_service.service.media.video.metadate.VideoMetadataService;
 import uz.consortgroup.course_service.service.resourse.ResourceService;
@@ -152,7 +152,7 @@ public class VideoUploadProcessorTest {
 
         when(dto.getOrderPosition()).thenReturn(1);
         when(resourceService.create(lessonId, ResourceType.VIDEO, fileUrl, fileSize, mimeType, 1)).thenReturn(null);
-        doReturn(null).when(processor).buildSingleResponse(null, dto); // Замокаем buildSingleResponse для случая null ресурса
+        doReturn(null).when(processor).buildSingleResponse(null, dto);
 
         VideoUploadResponseDto result = processor.processSingle(lessonId, dto, fileUrl, mimeType, fileSize);
 

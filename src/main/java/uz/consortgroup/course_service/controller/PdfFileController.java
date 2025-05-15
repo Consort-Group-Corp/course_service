@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import uz.consortgroup.course_service.dto.request.pdf.BulkPdfFilesUploadRequestDto;
-import uz.consortgroup.course_service.dto.request.pdf.PdfFileUploadRequestDto;
-import uz.consortgroup.course_service.dto.response.pdf.BulkPdfFilesUploadResponseDto;
-import uz.consortgroup.course_service.dto.response.pdf.PdfFileUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.request.pdf.BulkPdfFilesUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.request.pdf.PdfFileUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.response.pdf.BulkPdfFilesUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.response.pdf.PdfFileUploadResponseDto;
 import uz.consortgroup.course_service.service.media.pdf.PdfFileService;
 
 import java.util.List;
@@ -33,8 +33,8 @@ public class PdfFileController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/upload-pdf-file/{lessonId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public PdfFileUploadResponseDto uploadPdfFile(@PathVariable UUID lessonId,
-                                                 @RequestPart("metadata") String metadataJson,
-                                                 @RequestPart("file") MultipartFile file)
+                                                  @RequestPart("metadata") String metadataJson,
+                                                  @RequestPart("file") MultipartFile file)
             throws JsonProcessingException {
         PdfFileUploadRequestDto metadata = objectMapper.readValue(metadataJson, PdfFileUploadRequestDto.class);
         return fileService.upload(lessonId, metadata, file);

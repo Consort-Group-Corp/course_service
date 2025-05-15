@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import uz.consortgroup.course_service.dto.request.image.BulkImageUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.request.image.BulkImageUploadRequestDto;
 import uz.consortgroup.course_service.exception.EmptyFileException;
 import uz.consortgroup.course_service.exception.MismatchException;
 

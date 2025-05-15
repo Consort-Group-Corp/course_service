@@ -3,7 +3,7 @@ package uz.consortgroup.course_service.validator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import uz.consortgroup.course_service.dto.request.video.BulkVideoUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.request.video.BulkVideoUploadRequestDto;
 
 import java.util.List;
 

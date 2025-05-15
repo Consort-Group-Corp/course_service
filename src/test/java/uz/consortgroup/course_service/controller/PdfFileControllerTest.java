@@ -9,10 +9,10 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import uz.consortgroup.course_service.dto.request.pdf.BulkPdfFilesUploadRequestDto;
-import uz.consortgroup.course_service.dto.request.pdf.PdfFileUploadRequestDto;
-import uz.consortgroup.course_service.dto.response.pdf.BulkPdfFilesUploadResponseDto;
-import uz.consortgroup.course_service.dto.response.pdf.PdfFileUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.request.pdf.BulkPdfFilesUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.request.pdf.PdfFileUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.response.pdf.BulkPdfFilesUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.response.pdf.PdfFileUploadResponseDto;
 import uz.consortgroup.course_service.exception.MismatchException;
 import uz.consortgroup.course_service.service.media.pdf.PdfFileService;
 

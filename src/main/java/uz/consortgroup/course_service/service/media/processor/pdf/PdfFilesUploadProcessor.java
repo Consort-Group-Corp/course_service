@@ -1,14 +1,14 @@
 package uz.consortgroup.course_service.service.media.processor.pdf;
 
 import org.springframework.stereotype.Service;
-import uz.consortgroup.course_service.dto.request.pdf.BulkPdfFilesUploadRequestDto;
-import uz.consortgroup.course_service.dto.request.pdf.PdfFileUploadRequestDto;
-import uz.consortgroup.course_service.dto.response.pdf.BulkPdfFilesUploadResponseDto;
-import uz.consortgroup.course_service.dto.response.pdf.PdfFileUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.enumeration.MimeType;
+import uz.consortgroup.core.api.v1.dto.enumeration.ResourceType;
+import uz.consortgroup.core.api.v1.dto.request.pdf.BulkPdfFilesUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.request.pdf.PdfFileUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.response.pdf.BulkPdfFilesUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.response.pdf.PdfFileUploadResponseDto;
 import uz.consortgroup.course_service.entity.Resource;
 import uz.consortgroup.course_service.entity.ResourceTranslation;
-import uz.consortgroup.course_service.entity.enumeration.MimeType;
-import uz.consortgroup.course_service.entity.enumeration.ResourceType;
 import uz.consortgroup.course_service.mapper.ResourceTranslationMapper;
 import uz.consortgroup.course_service.service.media.processor.AbstractMediaUploadProcessor;
 import uz.consortgroup.course_service.service.resourse.ResourceService;

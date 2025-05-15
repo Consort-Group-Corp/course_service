@@ -22,8 +22,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import uz.consortgroup.course_service.entity.enumeration.MimeType;
-import uz.consortgroup.course_service.entity.enumeration.ResourceType;
+import uz.consortgroup.core.api.v1.dto.enumeration.MimeType;
+import uz.consortgroup.core.api.v1.dto.enumeration.ResourceType;
+
 
 import java.time.LocalDateTime;
 import java.util.List;
