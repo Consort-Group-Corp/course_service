@@ -7,8 +7,8 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
-import uz.consortgroup.core.api.v1.dto.request.video.BulkVideoUploadRequestDto;
-import uz.consortgroup.core.api.v1.dto.request.video.VideoUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.video.BulkVideoUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.video.VideoUploadRequestDto;
 
 import java.util.Collections;
 import java.util.List;

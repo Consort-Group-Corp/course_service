@@ -18,9 +18,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import uz.consortgroup.core.api.v1.dto.enumeration.CourseStatus;
-import uz.consortgroup.core.api.v1.dto.enumeration.CourseType;
-import uz.consortgroup.core.api.v1.dto.enumeration.PriceType;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.CourseStatus;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.CourseType;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.PriceType;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

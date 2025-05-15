@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uz.consortgroup.core.api.v1.dto.request.module.ModuleCreateRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.module.ModuleCreateRequestDto;
 
 import java.util.Collections;
 import java.util.List;

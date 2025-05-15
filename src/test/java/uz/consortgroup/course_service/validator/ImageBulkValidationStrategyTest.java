@@ -7,8 +7,8 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
-import uz.consortgroup.core.api.v1.dto.request.image.BulkImageUploadRequestDto;
-import uz.consortgroup.core.api.v1.dto.request.image.ImageUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.image.BulkImageUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.image.ImageUploadRequestDto;
 import uz.consortgroup.course_service.exception.EmptyFileException;
 import uz.consortgroup.course_service.exception.MismatchException;
 

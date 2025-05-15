@@ -1,13 +1,13 @@
 package uz.consortgroup.course_service.service.media.processor.video;
 
 import org.springframework.stereotype.Service;
-import uz.consortgroup.core.api.v1.dto.enumeration.MimeType;
-import uz.consortgroup.core.api.v1.dto.enumeration.ResourceType;
-import uz.consortgroup.core.api.v1.dto.request.resource.ResourceTranslationRequestDto;
-import uz.consortgroup.core.api.v1.dto.request.video.BulkVideoUploadRequestDto;
-import uz.consortgroup.core.api.v1.dto.request.video.VideoUploadRequestDto;
-import uz.consortgroup.core.api.v1.dto.response.video.BulkVideoUploadResponseDto;
-import uz.consortgroup.core.api.v1.dto.response.video.VideoUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.MimeType;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.ResourceType;
+import uz.consortgroup.core.api.v1.dto.course.request.resource.ResourceTranslationRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.video.BulkVideoUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.video.VideoUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.response.video.BulkVideoUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.course.response.video.VideoUploadResponseDto;
 import uz.consortgroup.course_service.entity.Lesson;
 import uz.consortgroup.course_service.entity.Resource;
 import uz.consortgroup.course_service.entity.ResourceTranslation;

@@ -13,10 +13,10 @@
     import org.springframework.web.bind.annotation.ResponseStatus;
     import org.springframework.web.bind.annotation.RestController;
     import org.springframework.web.multipart.MultipartFile;
-    import uz.consortgroup.core.api.v1.dto.request.video.BulkVideoUploadRequestDto;
-    import uz.consortgroup.core.api.v1.dto.request.video.VideoUploadRequestDto;
-    import uz.consortgroup.core.api.v1.dto.response.video.BulkVideoUploadResponseDto;
-    import uz.consortgroup.core.api.v1.dto.response.video.VideoUploadResponseDto;
+    import uz.consortgroup.core.api.v1.dto.course.request.video.BulkVideoUploadRequestDto;
+    import uz.consortgroup.core.api.v1.dto.course.request.video.VideoUploadRequestDto;
+    import uz.consortgroup.core.api.v1.dto.course.response.video.BulkVideoUploadResponseDto;
+    import uz.consortgroup.core.api.v1.dto.course.response.video.VideoUploadResponseDto;
     import uz.consortgroup.course_service.service.media.video.VideoUploadService;
 
     import java.util.List;

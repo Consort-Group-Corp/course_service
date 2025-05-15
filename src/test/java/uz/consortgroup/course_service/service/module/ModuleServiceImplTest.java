@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uz.consortgroup.core.api.v1.dto.request.module.ModuleCreateRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.module.ModuleCreateRequestDto;
 import uz.consortgroup.course_service.entity.Course;
 import uz.consortgroup.course_service.entity.Module;
 import uz.consortgroup.course_service.repository.ModuleRepository;

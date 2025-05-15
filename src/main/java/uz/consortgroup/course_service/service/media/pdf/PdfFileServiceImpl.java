@@ -1,10 +1,10 @@
 package uz.consortgroup.course_service.service.media.pdf;
 
 import org.springframework.stereotype.Service;
-import uz.consortgroup.core.api.v1.dto.request.pdf.BulkPdfFilesUploadRequestDto;
-import uz.consortgroup.core.api.v1.dto.request.pdf.PdfFileUploadRequestDto;
-import uz.consortgroup.core.api.v1.dto.response.pdf.BulkPdfFilesUploadResponseDto;
-import uz.consortgroup.core.api.v1.dto.response.pdf.PdfFileUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.course.request.pdf.BulkPdfFilesUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.pdf.PdfFileUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.response.pdf.BulkPdfFilesUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.course.response.pdf.PdfFileUploadResponseDto;
 import uz.consortgroup.course_service.service.lesson.LessonService;
 import uz.consortgroup.course_service.service.media.AbstractMediaUploadService;
 import uz.consortgroup.course_service.service.media.processor.pdf.BulkPdfFilesUploadProcessor;

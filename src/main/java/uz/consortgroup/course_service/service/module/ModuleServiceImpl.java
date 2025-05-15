@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import uz.consortgroup.core.api.v1.dto.request.module.ModuleCreateRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.module.ModuleCreateRequestDto;
 import uz.consortgroup.course_service.asspect.annotation.AllAspect;
 import uz.consortgroup.course_service.entity.Course;
 import uz.consortgroup.course_service.entity.Module;

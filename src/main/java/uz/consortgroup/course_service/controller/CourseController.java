@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import uz.consortgroup.core.api.v1.dto.request.course.CourseCreateRequestDto;
-import uz.consortgroup.core.api.v1.dto.response.course.CourseResponseDto;
+import uz.consortgroup.core.api.v1.dto.course.request.course.CourseCreateRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.response.course.CourseResponseDto;
 import uz.consortgroup.course_service.service.course.CourseService;
 
 @RestController

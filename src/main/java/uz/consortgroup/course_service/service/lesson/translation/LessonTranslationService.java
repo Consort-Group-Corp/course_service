@@ -1,6 +1,6 @@
 package uz.consortgroup.course_service.service.lesson.translation;
 
-import uz.consortgroup.core.api.v1.dto.request.module.ModuleCreateRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.module.ModuleCreateRequestDto;
 import uz.consortgroup.course_service.entity.Lesson;
 import uz.consortgroup.course_service.entity.LessonTranslation;
 

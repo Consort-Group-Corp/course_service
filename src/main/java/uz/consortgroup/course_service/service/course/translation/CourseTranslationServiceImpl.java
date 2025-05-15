@@ -3,7 +3,7 @@ package uz.consortgroup.course_service.service.course.translation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import uz.consortgroup.core.api.v1.dto.request.course.CourseTranslationRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.course.CourseTranslationRequestDto;
 import uz.consortgroup.course_service.asspect.annotation.AllAspect;
 import uz.consortgroup.course_service.entity.Course;
 import uz.consortgroup.course_service.entity.CourseTranslation;

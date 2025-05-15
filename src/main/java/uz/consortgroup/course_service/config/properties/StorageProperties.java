@@ -8,7 +8,7 @@ import org.springframework.util.unit.DataSize;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import uz.consortgroup.core.api.v1.dto.enumeration.FileType;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.FileType;
 
 import java.nio.file.Path;
 import java.util.List;

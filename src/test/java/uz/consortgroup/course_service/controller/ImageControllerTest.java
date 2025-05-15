@@ -9,10 +9,10 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.mock.web.MockPart;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import uz.consortgroup.core.api.v1.dto.request.image.BulkImageUploadRequestDto;
-import uz.consortgroup.core.api.v1.dto.request.image.ImageUploadRequestDto;
-import uz.consortgroup.core.api.v1.dto.response.image.BulkImageUploadResponseDto;
-import uz.consortgroup.core.api.v1.dto.response.image.ImageUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.course.request.image.BulkImageUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.image.ImageUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.response.image.BulkImageUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.course.response.image.ImageUploadResponseDto;
 import uz.consortgroup.course_service.exception.MismatchException;
 import uz.consortgroup.course_service.service.media.image.ImageService;
 
@@ -20,7 +20,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;

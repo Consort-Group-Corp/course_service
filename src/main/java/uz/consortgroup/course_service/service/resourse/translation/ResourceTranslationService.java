@@ -1,7 +1,7 @@
 package uz.consortgroup.course_service.service.resourse.translation;
 
-import uz.consortgroup.core.api.v1.dto.request.module.ModuleCreateRequestDto;
-import uz.consortgroup.core.api.v1.dto.request.resource.ResourceTranslationRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.module.ModuleCreateRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.resource.ResourceTranslationRequestDto;
 import uz.consortgroup.course_service.entity.Resource;
 import uz.consortgroup.course_service.entity.ResourceTranslation;
 

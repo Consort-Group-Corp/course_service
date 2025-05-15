@@ -8,7 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.util.unit.DataSize;
 import org.springframework.web.multipart.MultipartFile;
-import uz.consortgroup.core.api.v1.dto.enumeration.FileType;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.FileType;
 import uz.consortgroup.course_service.config.properties.StorageProperties;
 import uz.consortgroup.course_service.exception.FileStorageException;
 import uz.consortgroup.course_service.validator.FileStorageValidator;

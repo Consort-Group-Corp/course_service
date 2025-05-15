@@ -1,6 +1,6 @@
 package uz.consortgroup.course_service.service.media.processor;
 
-import uz.consortgroup.core.api.v1.dto.enumeration.MimeType;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.MimeType;
 
 import java.util.List;
 import java.util.UUID;

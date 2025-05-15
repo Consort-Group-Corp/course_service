@@ -3,8 +3,8 @@ package uz.consortgroup.course_service.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-import uz.consortgroup.core.api.v1.dto.request.resource.ResourceCreateRequestDto;
-import uz.consortgroup.core.api.v1.dto.response.resource.ResourceResponseDto;
+import uz.consortgroup.core.api.v1.dto.course.request.resource.ResourceCreateRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.response.resource.ResourceResponseDto;
 import uz.consortgroup.course_service.entity.Resource;
 
 import java.util.List;

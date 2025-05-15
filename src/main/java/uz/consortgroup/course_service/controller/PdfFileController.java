@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import uz.consortgroup.core.api.v1.dto.request.pdf.BulkPdfFilesUploadRequestDto;
-import uz.consortgroup.core.api.v1.dto.request.pdf.PdfFileUploadRequestDto;
-import uz.consortgroup.core.api.v1.dto.response.pdf.BulkPdfFilesUploadResponseDto;
-import uz.consortgroup.core.api.v1.dto.response.pdf.PdfFileUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.course.request.pdf.BulkPdfFilesUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.pdf.PdfFileUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.response.pdf.BulkPdfFilesUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.course.response.pdf.PdfFileUploadResponseDto;
 import uz.consortgroup.course_service.service.media.pdf.PdfFileService;
 
 import java.util.List;

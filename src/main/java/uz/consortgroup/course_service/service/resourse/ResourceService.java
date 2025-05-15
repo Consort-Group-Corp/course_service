@@ -1,8 +1,8 @@
 package uz.consortgroup.course_service.service.resourse;
 
-import uz.consortgroup.core.api.v1.dto.enumeration.MimeType;
-import uz.consortgroup.core.api.v1.dto.enumeration.ResourceType;
-import uz.consortgroup.core.api.v1.dto.request.module.ModuleCreateRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.MimeType;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.ResourceType;
+import uz.consortgroup.core.api.v1.dto.course.request.module.ModuleCreateRequestDto;
 import uz.consortgroup.course_service.entity.Lesson;
 import uz.consortgroup.course_service.entity.Resource;
 
