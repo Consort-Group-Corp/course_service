@@ -18,7 +18,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import uz.consortgroup.course_service.entity.enumeration.Language;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.Language;
+
 
 import java.util.UUID;
 

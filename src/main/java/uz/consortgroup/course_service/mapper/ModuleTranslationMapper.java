@@ -1,8 +1,8 @@
 package uz.consortgroup.course_service.mapper;
 
 import org.mapstruct.Mapper;
-import uz.consortgroup.course_service.dto.request.module.ModuleTranslationRequestDto;
-import uz.consortgroup.course_service.dto.response.module.ModuleTranslationResponseDto;
+import uz.consortgroup.core.api.v1.dto.course.request.module.ModuleTranslationRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.response.module.ModuleTranslationResponseDto;
 import uz.consortgroup.course_service.entity.ModuleTranslation;
 
 import java.util.List;

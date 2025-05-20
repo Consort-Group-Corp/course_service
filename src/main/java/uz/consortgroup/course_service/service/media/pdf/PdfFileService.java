@@ -1,10 +1,10 @@
 package uz.consortgroup.course_service.service.media.pdf;
 
-import uz.consortgroup.course_service.dto.request.pdf.BulkPdfFilesUploadRequestDto;
-import uz.consortgroup.course_service.dto.request.pdf.PdfFileUploadRequestDto;
-import uz.consortgroup.course_service.dto.response.pdf.BulkPdfFilesUploadResponseDto;
-import uz.consortgroup.course_service.dto.response.pdf.PdfFileUploadResponseDto;
-import uz.consortgroup.course_service.service.media.processor.MediaUploadService;
+import uz.consortgroup.core.api.v1.dto.course.request.pdf.BulkPdfFilesUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.pdf.PdfFileUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.response.pdf.BulkPdfFilesUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.course.response.pdf.PdfFileUploadResponseDto;
+import uz.consortgroup.course_service.service.media.MediaService;
 
-public interface PdfFileService extends MediaUploadService<PdfFileUploadRequestDto, PdfFileUploadResponseDto, BulkPdfFilesUploadRequestDto, BulkPdfFilesUploadResponseDto> {
+public interface PdfFileService extends MediaService<PdfFileUploadRequestDto, PdfFileUploadResponseDto, BulkPdfFilesUploadRequestDto, BulkPdfFilesUploadResponseDto> {
 }

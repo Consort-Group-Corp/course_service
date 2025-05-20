@@ -7,8 +7,8 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
-import uz.consortgroup.course_service.dto.request.pdf.BulkPdfFilesUploadRequestDto;
-import uz.consortgroup.course_service.dto.request.pdf.PdfFileUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.pdf.BulkPdfFilesUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.pdf.PdfFileUploadRequestDto;
 
 import java.util.Collections;
 import java.util.List;

@@ -1,10 +1,10 @@
 package uz.consortgroup.course_service.service.media.processor;
 
 import lombok.RequiredArgsConstructor;
-import uz.consortgroup.course_service.dto.response.resource.ResourceTranslationResponseDto;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.MimeType;
+import uz.consortgroup.core.api.v1.dto.course.response.resource.ResourceTranslationResponseDto;
 import uz.consortgroup.course_service.entity.Resource;
 import uz.consortgroup.course_service.entity.ResourceTranslation;
-import uz.consortgroup.course_service.entity.enumeration.MimeType;
 import uz.consortgroup.course_service.mapper.ResourceTranslationMapper;
 import uz.consortgroup.course_service.service.resourse.ResourceService;
 import uz.consortgroup.course_service.service.resourse.translation.ResourceTranslationService;

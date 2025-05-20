@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.FileType;
 import uz.consortgroup.course_service.config.properties.StorageProperties;
-import uz.consortgroup.course_service.entity.enumeration.FileType;
 import uz.consortgroup.course_service.exception.FileStorageException;
 import uz.consortgroup.course_service.validator.FileStorageValidator;
 
@@ -52,6 +52,33 @@ public class LocalFileStorageService implements FileStorageService {
         return filePaths;
     }
 
+    @Override
+    public void delete(String fileUrl) {
+        try {
+            Path filePath = props.getBaseDir().resolve(fileUrl.replace("/media/", ""));
+            Files.deleteIfExists(filePath);
+            log.info("Deleted file: {}", filePath);
+        } catch (IOException e) {
+            log.error("Failed to delete file: {}", fileUrl, e);
+            throw new FileStorageException("Failed to delete file: " + fileUrl, e);
+        }
+    }
+
+    @Override
+    public void deleteMultiple(List<String> fileUrls) {
+        for (String fileUrl : fileUrls) {
+            try {
+                Path filePath = props.getBaseDir().resolve(fileUrl.replace("/media/", ""));
+                Files.deleteIfExists(filePath);
+                log.debug("Deleted file: {}", filePath);
+            } catch (IOException e) {
+                log.error("Failed to delete file: {}", fileUrl, e);
+                throw new FileStorageException("Failed to delete file: " + fileUrl, e);
+            }
+        }
+        log.info("Deleted {} files", fileUrls.size());
+    }
+
     private String storeFile(UUID courseId, UUID lessonId, MultipartFile file, FileType type) {
         String originalFilename = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
         String extension = getFileExtension(originalFilename);
@@ -64,6 +91,7 @@ public class LocalFileStorageService implements FileStorageService {
 
         return formatMediaPath(courseId, lessonId, filename);
     }
+
 
     private String getFileExtension(String filename) {
         int dotIndex = filename.lastIndexOf('.');

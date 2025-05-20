@@ -3,8 +3,9 @@ package uz.consortgroup.course_service.mapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
-import uz.consortgroup.course_service.dto.request.module.ModuleCreateRequestDto;
-import uz.consortgroup.course_service.dto.response.module.ModuleResponseDto;
+
+import uz.consortgroup.core.api.v1.dto.course.request.module.ModuleCreateRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.response.module.ModuleResponseDto;
 import uz.consortgroup.course_service.entity.Module;
 
 import java.util.List;

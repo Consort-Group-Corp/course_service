@@ -8,4 +8,6 @@ import java.util.UUID;
 public interface FileStorageService {
     String store(UUID courseId, UUID lessonId, MultipartFile file);
     List<String> storeMultiple(UUID courseId, UUID lessonId, List<MultipartFile> files);
+    void delete(String fileUrl);
+    void deleteMultiple(List<String> fileUrls);
 }

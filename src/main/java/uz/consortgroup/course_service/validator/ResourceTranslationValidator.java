@@ -1,9 +1,9 @@
 package uz.consortgroup.course_service.validator;
 
 import org.springframework.stereotype.Component;
-import uz.consortgroup.course_service.dto.request.lesson.LessonCreateRequestDto;
-import uz.consortgroup.course_service.dto.request.resource.ResourceCreateRequestDto;
-import uz.consortgroup.course_service.dto.request.resource.ResourceTranslationRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.lesson.LessonCreateRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.resource.ResourceCreateRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.resource.ResourceTranslationRequestDto;
 import uz.consortgroup.course_service.entity.Resource;
 import uz.consortgroup.course_service.entity.ResourceTranslation;
 

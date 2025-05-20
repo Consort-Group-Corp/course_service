@@ -3,8 +3,8 @@ package uz.consortgroup.course_service.service.lesson;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uz.consortgroup.core.api.v1.dto.course.request.module.ModuleCreateRequestDto;
 import uz.consortgroup.course_service.asspect.annotation.AllAspect;
-import uz.consortgroup.course_service.dto.request.module.ModuleCreateRequestDto;
 import uz.consortgroup.course_service.entity.Lesson;
 import uz.consortgroup.course_service.entity.Module;
 import uz.consortgroup.course_service.exception.LessonNotFoundException;
@@ -58,5 +58,12 @@ public class LessonServiceImpl implements LessonService {
     public Lesson getLessonEntity(UUID lessonId) {
         return lessonRepository.findById(lessonId)
                 .orElseThrow(() -> new LessonNotFoundException("Lesson not found"));
+    }
+
+    @Override
+    @AllAspect
+    public UUID findLessonId(UUID lessonId) {
+        Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson not found"));
+        return lesson.getId();
     }
 }

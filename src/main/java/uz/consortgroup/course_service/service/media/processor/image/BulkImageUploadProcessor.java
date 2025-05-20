@@ -1,16 +1,17 @@
 package uz.consortgroup.course_service.service.media.processor.image;
 
 import org.springframework.stereotype.Component;
-import uz.consortgroup.course_service.dto.request.image.BulkImageUploadRequestDto;
-import uz.consortgroup.course_service.dto.request.image.ImageUploadRequestDto;
-import uz.consortgroup.course_service.dto.request.resource.ResourceTranslationRequestDto;
-import uz.consortgroup.course_service.dto.response.image.BulkImageUploadResponseDto;
-import uz.consortgroup.course_service.dto.response.image.ImageUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.MimeType;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.ResourceType;
+import uz.consortgroup.core.api.v1.dto.course.request.image.BulkImageUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.image.ImageUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.resource.ResourceTranslationRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.response.image.BulkImageUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.course.response.image.ImageUploadResponseDto;
 import uz.consortgroup.course_service.entity.Lesson;
 import uz.consortgroup.course_service.entity.Resource;
 import uz.consortgroup.course_service.entity.ResourceTranslation;
-import uz.consortgroup.course_service.entity.enumeration.MimeType;
-import uz.consortgroup.course_service.entity.enumeration.ResourceType;
+
 import uz.consortgroup.course_service.mapper.ResourceTranslationMapper;
 import uz.consortgroup.course_service.service.media.processor.AbstractMediaUploadProcessor;
 import uz.consortgroup.course_service.service.resourse.ResourceService;

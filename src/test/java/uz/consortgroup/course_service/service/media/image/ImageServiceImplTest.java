@@ -7,14 +7,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
-import uz.consortgroup.course_service.dto.request.image.BulkImageUploadRequestDto;
-import uz.consortgroup.course_service.dto.request.image.ImageUploadRequestDto;
-import uz.consortgroup.course_service.dto.response.image.BulkImageUploadResponseDto;
-import uz.consortgroup.course_service.dto.response.image.ImageUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.FileType;
+import uz.consortgroup.core.api.v1.dto.course.request.image.BulkImageUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.image.ImageUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.response.image.BulkImageUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.course.response.image.ImageUploadResponseDto;
 import uz.consortgroup.course_service.entity.Lesson;
 import uz.consortgroup.course_service.entity.Module;
 import uz.consortgroup.course_service.entity.Course;
-import uz.consortgroup.course_service.entity.enumeration.FileType;
+import uz.consortgroup.course_service.repository.ResourceRepository;
 import uz.consortgroup.course_service.service.lesson.LessonService;
 import uz.consortgroup.course_service.service.media.processor.image.BulkImageUploadProcessor;
 import uz.consortgroup.course_service.service.media.processor.image.ImageUploadProcessor;
@@ -47,6 +48,9 @@ public class ImageServiceImplTest {
     private FileStorageValidator fileStorageValidator;
 
     @Mock
+    private ResourceRepository resourceRepository;
+
+    @Mock
     private MultipartFile imageFile;
 
     @Mock
@@ -62,7 +66,7 @@ public class ImageServiceImplTest {
             lessonService,
             imageUploadProcessor,
             bulkImageUploadProcessor,
-            fileStorageValidator
+            fileStorageValidator, resourceRepository
         );
     }
 

@@ -5,11 +5,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import uz.consortgroup.course_service.dto.request.lesson.LessonCreateRequestDto;
-import uz.consortgroup.course_service.dto.request.module.ModuleCreateRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.LessonType;
+import uz.consortgroup.core.api.v1.dto.course.request.lesson.LessonCreateRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.module.ModuleCreateRequestDto;
 import uz.consortgroup.course_service.entity.Lesson;
 import uz.consortgroup.course_service.entity.Module;
-import uz.consortgroup.course_service.entity.enumeration.LessonType;
 import uz.consortgroup.course_service.exception.LessonNotFoundException;
 import uz.consortgroup.course_service.repository.LessonRepository;
 

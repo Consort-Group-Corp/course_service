@@ -7,11 +7,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.FileType;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.MimeType;
 import uz.consortgroup.course_service.entity.Lesson;
 import uz.consortgroup.course_service.entity.Module;
 import uz.consortgroup.course_service.entity.Course;
-import uz.consortgroup.course_service.entity.enumeration.FileType;
-import uz.consortgroup.course_service.entity.enumeration.MimeType;
 import uz.consortgroup.course_service.service.lesson.LessonService;
 import uz.consortgroup.course_service.service.media.processor.AbstractMediaUploadProcessor;
 import uz.consortgroup.course_service.service.storage.FileStorageService;
@@ -25,7 +25,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class AbstractMediaUploadServiceTest {
+public class AbstractMediaServiceTest {
 
     @Mock
     private FileStorageService storage;

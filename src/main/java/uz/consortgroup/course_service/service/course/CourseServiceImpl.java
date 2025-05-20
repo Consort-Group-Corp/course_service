@@ -6,10 +6,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import uz.consortgroup.core.api.v1.dto.course.request.course.CourseCreateRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.response.course.CourseResponseDto;
+import uz.consortgroup.core.api.v1.dto.course.response.module.ModuleResponseDto;
 import uz.consortgroup.course_service.asspect.annotation.AllAspect;
-import uz.consortgroup.course_service.dto.request.course.CourseCreateRequestDto;
-import uz.consortgroup.course_service.dto.response.course.CourseResponseDto;
-import uz.consortgroup.course_service.dto.response.module.ModuleResponseDto;
+import uz.consortgroup.course_service.asspect.annotation.AspectAfterThrowing;
+import uz.consortgroup.course_service.asspect.annotation.LoggingAspectAfterMethod;
+import uz.consortgroup.course_service.asspect.annotation.LoggingAspectBeforeMethod;
 import uz.consortgroup.course_service.entity.Course;
 import uz.consortgroup.course_service.entity.CourseTranslation;
 import uz.consortgroup.course_service.entity.Lesson;
@@ -27,6 +30,7 @@ import uz.consortgroup.course_service.service.module.ModuleService;
 import uz.consortgroup.course_service.service.module.translation.ModuleTranslationService;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -74,6 +78,14 @@ public class CourseServiceImpl implements CourseService {
         mapModulesToResponseDto(response, savedModules);
 
         return response;
+    }
+
+    @Override
+    @LoggingAspectBeforeMethod
+    @LoggingAspectAfterMethod
+    @AspectAfterThrowing
+    public void delete(UUID courseId) {
+        courseRepository.findById(courseId).ifPresent(courseRepository::delete);
     }
 
     private void mapModulesToResponseDto(CourseResponseDto response, List<Module> savedModules) {

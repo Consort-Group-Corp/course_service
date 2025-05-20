@@ -7,14 +7,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
-import uz.consortgroup.course_service.dto.request.pdf.BulkPdfFilesUploadRequestDto;
-import uz.consortgroup.course_service.dto.request.pdf.PdfFileUploadRequestDto;
-import uz.consortgroup.course_service.dto.response.pdf.BulkPdfFilesUploadResponseDto;
-import uz.consortgroup.course_service.dto.response.pdf.PdfFileUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.FileType;
+import uz.consortgroup.core.api.v1.dto.course.request.pdf.BulkPdfFilesUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.request.pdf.PdfFileUploadRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.response.pdf.BulkPdfFilesUploadResponseDto;
+import uz.consortgroup.core.api.v1.dto.course.response.pdf.PdfFileUploadResponseDto;
 import uz.consortgroup.course_service.entity.Lesson;
 import uz.consortgroup.course_service.entity.Module;
 import uz.consortgroup.course_service.entity.Course;
-import uz.consortgroup.course_service.entity.enumeration.FileType;
+import uz.consortgroup.course_service.repository.ResourceRepository;
 import uz.consortgroup.course_service.service.lesson.LessonService;
 import uz.consortgroup.course_service.service.media.processor.pdf.BulkPdfFilesUploadProcessor;
 import uz.consortgroup.course_service.service.media.processor.pdf.PdfFilesUploadProcessor;
@@ -47,6 +48,9 @@ public class PdfFileServiceImplTest {
     private FileStorageValidator fileStorageValidator;
 
     @Mock
+    private ResourceRepository resourceRepository;
+
+    @Mock
     private MultipartFile pdfFile;
 
     @Mock
@@ -62,7 +66,8 @@ public class PdfFileServiceImplTest {
             lessonService,
             pdfUploadProcessor,
             bulkPdfUploadProcessor,
-            fileStorageValidator
+            fileStorageValidator,
+                resourceRepository
         );
     }
 

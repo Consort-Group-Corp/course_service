@@ -21,7 +21,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import uz.consortgroup.course_service.entity.enumeration.LessonType;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.LessonType;
 
 import java.time.LocalDateTime;
 import java.util.List;
