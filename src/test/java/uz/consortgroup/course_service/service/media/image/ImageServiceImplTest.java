@@ -15,6 +15,7 @@ import uz.consortgroup.core.api.v1.dto.course.response.image.ImageUploadResponse
 import uz.consortgroup.course_service.entity.Lesson;
 import uz.consortgroup.course_service.entity.Module;
 import uz.consortgroup.course_service.entity.Course;
+import uz.consortgroup.course_service.repository.ResourceRepository;
 import uz.consortgroup.course_service.service.lesson.LessonService;
 import uz.consortgroup.course_service.service.media.processor.image.BulkImageUploadProcessor;
 import uz.consortgroup.course_service.service.media.processor.image.ImageUploadProcessor;
@@ -47,6 +48,9 @@ public class ImageServiceImplTest {
     private FileStorageValidator fileStorageValidator;
 
     @Mock
+    private ResourceRepository resourceRepository;
+
+    @Mock
     private MultipartFile imageFile;
 
     @Mock
@@ -62,7 +66,7 @@ public class ImageServiceImplTest {
             lessonService,
             imageUploadProcessor,
             bulkImageUploadProcessor,
-            fileStorageValidator
+            fileStorageValidator, resourceRepository
         );
     }
 

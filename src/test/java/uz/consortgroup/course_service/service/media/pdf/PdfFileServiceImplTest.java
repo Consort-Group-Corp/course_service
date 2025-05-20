@@ -15,6 +15,7 @@ import uz.consortgroup.core.api.v1.dto.course.response.pdf.PdfFileUploadResponse
 import uz.consortgroup.course_service.entity.Lesson;
 import uz.consortgroup.course_service.entity.Module;
 import uz.consortgroup.course_service.entity.Course;
+import uz.consortgroup.course_service.repository.ResourceRepository;
 import uz.consortgroup.course_service.service.lesson.LessonService;
 import uz.consortgroup.course_service.service.media.processor.pdf.BulkPdfFilesUploadProcessor;
 import uz.consortgroup.course_service.service.media.processor.pdf.PdfFilesUploadProcessor;
@@ -47,6 +48,9 @@ public class PdfFileServiceImplTest {
     private FileStorageValidator fileStorageValidator;
 
     @Mock
+    private ResourceRepository resourceRepository;
+
+    @Mock
     private MultipartFile pdfFile;
 
     @Mock
@@ -62,7 +66,8 @@ public class PdfFileServiceImplTest {
             lessonService,
             pdfUploadProcessor,
             bulkPdfUploadProcessor,
-            fileStorageValidator
+            fileStorageValidator,
+                resourceRepository
         );
     }
 

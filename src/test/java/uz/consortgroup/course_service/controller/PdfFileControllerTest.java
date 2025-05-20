@@ -49,7 +49,7 @@ class PdfFileControllerTest {
         when(pdfFileService.upload(eq(lessonId), any(), any()))
                 .thenReturn(new PdfFileUploadResponseDto());
 
-        mockMvc.perform(multipart("/api/v1/pdf/upload-pdf-file/{lessonId}", lessonId)
+        mockMvc.perform(multipart("/api/v1/lessons/{lessonId}/pdfs", lessonId)
                         .file(file)
                         .part(new MockPart("metadata", objectMapper.writeValueAsString(metadata).getBytes()))
                         .contentType(MediaType.MULTIPART_FORM_DATA))
@@ -61,7 +61,7 @@ class PdfFileControllerTest {
         UUID lessonId = UUID.randomUUID();
         MockMultipartFile file = new MockMultipartFile("file", "test.pdf", "application/pdf", "content".getBytes());
 
-        mockMvc.perform(multipart("/api/v1/pdf/upload-pdf-file/{lessonId}", lessonId)
+        mockMvc.perform(multipart("/api/v1/lessons/{lessonId}/pdfs", lessonId)
                         .file(file)
                         .part(new MockPart("metadata", "invalid json".getBytes()))
                         .contentType(MediaType.MULTIPART_FORM_DATA))
@@ -73,7 +73,7 @@ class PdfFileControllerTest {
         UUID lessonId = UUID.randomUUID();
         PdfFileUploadRequestDto metadata = PdfFileUploadRequestDto.builder().build();
 
-        mockMvc.perform(multipart("/api/v1/pdf/upload-pdf-file/{lessonId}", lessonId)
+        mockMvc.perform(multipart("/api/v1/lessons/{lessonId}/pdfs", lessonId)
                         .part(new MockPart("metadata", objectMapper.writeValueAsString(metadata).getBytes()))
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isBadRequest());
@@ -89,7 +89,7 @@ class PdfFileControllerTest {
         when(pdfFileService.uploadBulk(eq(lessonId), any(), any()))
                 .thenReturn(new BulkPdfFilesUploadResponseDto());
 
-        mockMvc.perform(multipart("/api/v1/pdf/upload-pdf-files/{lessonId}", lessonId)
+        mockMvc.perform(multipart("/api/v1/lessons/{lessonId}/pdfs/bulk", lessonId)
                         .file(file1)
                         .file(file2)
                         .part(new MockPart("metadata", objectMapper.writeValueAsString(metadata).getBytes()))
@@ -119,7 +119,7 @@ class PdfFileControllerTest {
         );
         filePart.getHeaders().setContentType(MediaType.APPLICATION_PDF);
 
-        mockMvc.perform(multipart("/api/v1/pdf/upload-pdf-files/{lessonId}", lessonId)
+        mockMvc.perform(multipart("/api/v1/lessons/{lessonId}/pdfs/bulk", lessonId)
                         .part(metadataPart)
                         .part(filePart)
                         .contentType(MediaType.MULTIPART_FORM_DATA))
@@ -133,7 +133,7 @@ class PdfFileControllerTest {
         UUID lessonId = UUID.randomUUID();
         BulkPdfFilesUploadRequestDto metadata = BulkPdfFilesUploadRequestDto.builder().build();
 
-        mockMvc.perform(multipart("/api/v1/pdf/upload-pdf-files/{lessonId}", lessonId)
+        mockMvc.perform(multipart("/api/v1/lessons/{lessonId}/pdfs/bulk", lessonId)
                         .part(new MockPart("metadata", objectMapper.writeValueAsString(metadata).getBytes()))
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isBadRequest());

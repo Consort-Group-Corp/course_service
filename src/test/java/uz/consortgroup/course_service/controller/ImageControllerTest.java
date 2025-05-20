@@ -55,7 +55,7 @@ public class ImageControllerTest {
         when(imageService.upload(eq(lessonId), any(), any()))
             .thenReturn(ImageUploadResponseDto.builder().build());
 
-        mockMvc.perform(multipart("/api/v1/image/upload-image-file/{lessonId}", lessonId)
+        mockMvc.perform(multipart("/api/v1/lessons/{lessonId}/images", lessonId)
                 .file(file)
                 .part(new MockPart("metadata",
                     objectMapper.writeValueAsString(metadata).getBytes()))
@@ -78,7 +78,7 @@ public class ImageControllerTest {
         when(imageService.uploadBulk(eq(lessonId), any(), any()))
             .thenReturn(BulkImageUploadResponseDto.builder().build());
 
-        mockMvc.perform(multipart("/api/v1/image/upload-images-files/{lessonId}", lessonId)
+        mockMvc.perform(multipart("/api/v1/lessons/{lessonId}/images/bulk", lessonId)
                 .file(file1)
                 .file(file2)
                 .part(new MockPart("metadata", 
@@ -98,7 +98,7 @@ public class ImageControllerTest {
         MockPart metadataPart = new MockPart("metadata", invalidJson.getBytes());
         metadataPart.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-        mockMvc.perform(multipart("/api/v1/image/upload-image-file/{lessonId}", lessonId)
+        mockMvc.perform(multipart("/api/v1/lessons/{lessonId}/images", lessonId)
                         .file(file)
                         .part(metadataPart))
                 .andExpect(status().isBadRequest());
@@ -115,7 +115,7 @@ public class ImageControllerTest {
                 objectMapper.writeValueAsString(metadata).getBytes());
         metadataPart.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-        mockMvc.perform(multipart("/api/v1/image/upload-image-file/{lessonId}", lessonId)
+        mockMvc.perform(multipart("/api/v1/lessons/{lessonId}/images", lessonId)
                         .part(metadataPart)
                         .contentType(MediaType.MULTIPART_FORM_DATA))
                 .andExpect(status().isBadRequest())
@@ -129,7 +129,7 @@ public class ImageControllerTest {
             .images(List.of(ImageUploadRequestDto.builder().build()))
             .build();
 
-        mockMvc.perform(multipart("/api/v1/image/upload-images-files/{lessonId}", lessonId)
+        mockMvc.perform(multipart("/api/v1/lessons/{lessonId}/images/bulk", lessonId)
                 .part(new MockPart("metadata", 
                     objectMapper.writeValueAsString(metadata).getBytes())))
             .andExpect(status().isBadRequest());
@@ -162,7 +162,7 @@ public class ImageControllerTest {
         );
         filePart.getHeaders().setContentType(MediaType.IMAGE_JPEG);
 
-        mockMvc.perform(multipart("/api/v1/image/upload-images-files/{lessonId}", lessonId)
+        mockMvc.perform(multipart("/api/v1/lessons/{lessonId}/images/bulk", lessonId)
                         .part(metadataPart)
                         .part(filePart)
                         .contentType(MediaType.MULTIPART_FORM_DATA))
