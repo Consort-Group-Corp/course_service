@@ -59,4 +59,11 @@ public class LessonServiceImpl implements LessonService {
         return lessonRepository.findById(lessonId)
                 .orElseThrow(() -> new LessonNotFoundException("Lesson not found"));
     }
+
+    @Override
+    @AllAspect
+    public UUID findLessonId(UUID lessonId) {
+        Lesson lesson = lessonRepository.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson not found"));
+        return lesson.getId();
+    }
 }

@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface VideoMetaDataRepository extends JpaRepository<VideoMetaData, UUID> {
+    void deleteByResource_Id(UUID resourceId);
 }

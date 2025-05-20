@@ -6,8 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -24,14 +26,14 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "api/v1/pdf")
+@RequestMapping(value = "/api/v1/lessons")
 @Validated
 public class PdfFileController {
     private final PdfFileService fileService;
     private final ObjectMapper objectMapper;
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "/upload-pdf-file/{lessonId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/{lessonId}/pdfs", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public PdfFileUploadResponseDto uploadPdfFile(@PathVariable UUID lessonId,
                                                   @RequestPart("metadata") String metadataJson,
                                                   @RequestPart("file") MultipartFile file)
@@ -40,12 +42,24 @@ public class PdfFileController {
         return fileService.upload(lessonId, metadata, file);
     }
 
-    @PostMapping(value = "/upload-pdf-files/{lessonId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/{lessonId}/pdfs/bulk", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public BulkPdfFilesUploadResponseDto uploadPdfFiles(@PathVariable UUID lessonId,
                                                         @RequestPart("metadata") String metadataJson,
                                                         @RequestPart("files") List<MultipartFile> files) throws JsonProcessingException {
         BulkPdfFilesUploadRequestDto metadata = objectMapper.readValue(metadataJson, BulkPdfFilesUploadRequestDto.class);
         return fileService.uploadBulk(lessonId, metadata, files);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{lessonId}/pdfs/{resourceId}")
+    public void delete(@PathVariable UUID lessonId, @PathVariable UUID resourceId) {
+        fileService.delete(lessonId, resourceId);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{lessonId}/pdfs/bulk")
+    public void deleteBulk(@PathVariable UUID lessonId, @RequestBody List<UUID> resourceIds) {
+        fileService.deleteBulk(lessonId, resourceIds);
     }
 }

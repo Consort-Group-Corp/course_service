@@ -51,7 +51,7 @@ storage:
         - mpeg
     image:
       sub-dir: images
-      max-file-size: 50MB
+      max-file-size: 100MB
       allowed-mime-types:
         - image/jpeg
         - image/png

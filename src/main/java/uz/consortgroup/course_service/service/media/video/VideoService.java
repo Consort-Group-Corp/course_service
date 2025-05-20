@@ -4,7 +4,7 @@ import uz.consortgroup.core.api.v1.dto.course.request.video.BulkVideoUploadReque
 import uz.consortgroup.core.api.v1.dto.course.request.video.VideoUploadRequestDto;
 import uz.consortgroup.core.api.v1.dto.course.response.video.BulkVideoUploadResponseDto;
 import uz.consortgroup.core.api.v1.dto.course.response.video.VideoUploadResponseDto;
-import uz.consortgroup.course_service.service.media.processor.MediaUploadService;
+import uz.consortgroup.course_service.service.media.MediaService;
 
-public interface VideoUploadService extends MediaUploadService<VideoUploadRequestDto, VideoUploadResponseDto, BulkVideoUploadRequestDto, BulkVideoUploadResponseDto> {
+public interface VideoService extends MediaService<VideoUploadRequestDto, VideoUploadResponseDto, BulkVideoUploadRequestDto, BulkVideoUploadResponseDto> {
 }

@@ -13,6 +13,7 @@ import uz.consortgroup.course_service.service.storage.FileStorageService;
 import uz.consortgroup.course_service.validator.FileStorageValidator;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -35,7 +36,7 @@ public abstract class AbstractMediaUploadService<SingleRequestDto, SingleRespons
         UUID courseId = lesson.getModule().getCourse().getId();
 
         long fileSize = file.getSize();
-        MimeType mimeType = MimeType.fromContentType(file.getContentType());
+        MimeType mimeType = MimeType.fromContentType(Objects.requireNonNull(file.getContentType()));
         String fileUrl = storage.store(courseId, lessonId, file);
 
         return singleProcessor.processSingle(lessonId, dto, fileUrl, mimeType, fileSize);
@@ -53,7 +54,7 @@ public abstract class AbstractMediaUploadService<SingleRequestDto, SingleRespons
         List<String> fileUrls = storage.storeMultiple(courseId, lessonId, files);
         List<Long> fileSizes = files.stream().map(MultipartFile::getSize).toList();
         List<MimeType> mimeTypes = files.stream()
-                .map(file -> MimeType.fromContentType(file.getContentType()))
+                .map(file -> MimeType.fromContentType(Objects.requireNonNull(file.getContentType())))
                 .toList();
 
         return bulkProcessor.processBulkUpload(lessonId, dto, fileUrls, mimeTypes, fileSizes);

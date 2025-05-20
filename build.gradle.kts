@@ -28,7 +28,7 @@ repositories {
 
 dependencies {
     // core-api-dto
-    implementation("uz.consortgroup:core-api-dto:0.0.3")
+    implementation("uz.consortgroup:core-api-dto:0.0.2")
 
     // Lombok
     compileOnly("org.projectlombok:lombok")
