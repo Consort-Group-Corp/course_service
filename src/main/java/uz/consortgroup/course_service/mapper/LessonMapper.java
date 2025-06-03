@@ -24,6 +24,11 @@ public interface LessonMapper {
             @Mapping(target = "translations",  source = "translations"),
     })
     LessonResponseDto toResponseDto(Lesson lesson);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "module", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     Lesson toEntity(LessonCreateRequestDto dto);
     List<LessonResponseDto> toResponseList(List<Lesson> lessons);
 }

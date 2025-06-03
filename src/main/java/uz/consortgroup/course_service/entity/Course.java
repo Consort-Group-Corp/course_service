@@ -23,6 +23,7 @@ import uz.consortgroup.core.api.v1.dto.course.enumeration.CourseType;
 import uz.consortgroup.core.api.v1.dto.course.enumeration.PriceType;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -65,10 +66,10 @@ public class Course {
     private BigDecimal discountPercent;
 
     @Column(name = "start_time")
-    private LocalDateTime startTime;
+    private Instant startTime;
 
     @Column(name = "end_time")
-    private LocalDateTime endTime;
+    private Instant endTime;
 
     @Column(name = "access_duration_min")
     private Integer accessDurationMin;

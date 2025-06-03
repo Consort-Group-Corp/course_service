@@ -24,7 +24,11 @@ public interface ModuleMapper {
             @Mapping(target = "lessons",     source = "lessons")
     })
     ModuleResponseDto toResponseDto(Module module);
+
     @Mapping(target = "course", ignore = true)
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     Module toEntity(ModuleCreateRequestDto dto);
     List<ModuleResponseDto> toResponseList(List<Module> modules);
 }
