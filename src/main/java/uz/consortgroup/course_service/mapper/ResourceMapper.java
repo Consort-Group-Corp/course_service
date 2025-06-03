@@ -23,6 +23,12 @@ public interface ResourceMapper {
             @Mapping(target = "translations", source = "translations")
     })
     ResourceResponseDto toResponseDto(Resource resource);
+
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "lesson", ignore = true)
+    @Mapping(target = "videoMetaData", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     Resource toEntity(ResourceCreateRequestDto dto);
     List<ResourceResponseDto> toResponseList(List<Resource> resources);
 }
