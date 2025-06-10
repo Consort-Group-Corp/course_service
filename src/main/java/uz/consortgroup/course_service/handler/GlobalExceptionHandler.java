@@ -12,6 +12,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
+import uz.consortgroup.course_service.exception.CourseNotFoundException;
 import uz.consortgroup.course_service.exception.EmptyFileException;
 import uz.consortgroup.course_service.exception.FileSizeLimitExceededException;
 import uz.consortgroup.course_service.exception.LessonNotFoundException;
@@ -124,6 +125,13 @@ public class GlobalExceptionHandler {
         log.error("Constraint violation: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Validation failed", ex.getMessage()));
+    }
+
+    @ExceptionHandler(CourseNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleCourseNotFoundException(CourseNotFoundException ex) {
+        log.error("Course not found: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(HttpStatus.NOT_FOUND.value(), "Course not found", ex.getMessage()));
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
