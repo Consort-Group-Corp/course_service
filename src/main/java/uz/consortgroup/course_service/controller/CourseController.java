@@ -30,6 +30,8 @@ public class CourseController {
         return courseService.create(dto);
     }
 
+
+
     @DeleteMapping("/{courseId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable UUID courseId) {

@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.consortgroup.core.api.v1.dto.course.request.course.CourseCreateRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.response.course.CoursePurchaseValidationResponseDto;
 import uz.consortgroup.core.api.v1.dto.course.response.course.CourseResponseDto;
 import uz.consortgroup.core.api.v1.dto.course.response.module.ModuleResponseDto;
 import uz.consortgroup.course_service.asspect.annotation.AllAspect;
@@ -17,6 +18,7 @@ import uz.consortgroup.course_service.entity.Course;
 import uz.consortgroup.course_service.entity.CourseTranslation;
 import uz.consortgroup.course_service.entity.Lesson;
 import uz.consortgroup.course_service.entity.Module;
+import uz.consortgroup.course_service.exception.CourseNotFoundException;
 import uz.consortgroup.course_service.mapper.CourseMapper;
 import uz.consortgroup.course_service.mapper.CourseTranslationMapper;
 import uz.consortgroup.course_service.mapper.LessonMapper;
@@ -78,6 +80,24 @@ public class CourseServiceImpl implements CourseService {
         mapModulesToResponseDto(response, savedModules);
 
         return response;
+    }
+
+    @Override
+    @AllAspect
+    public CoursePurchaseValidationResponseDto validateCourseForPurchase(UUID courseId) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new CourseNotFoundException(String.format("Course with id %s not found", courseId)));
+
+        return CoursePurchaseValidationResponseDto.builder()
+                .id(course.getId())
+                .courseStatus(course.getCourseStatus())
+                .courseType(course.getCourseType())
+                .priceType(course.getPriceType())
+                .priceAmount(course.getPriceAmount())
+                .startTime(course.getStartTime())
+                .endTime(course.getEndTime())
+                .purchasable(course.isPurchasable())
+                .build();
     }
 
     @Override
