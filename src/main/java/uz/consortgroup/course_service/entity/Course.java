@@ -12,6 +12,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -95,5 +96,12 @@ public class Course {
     @PreUpdate
     public void onUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    @Transient
+    public boolean isPurchasable() {
+        return this.courseStatus == CourseStatus.ACTIVE
+                && (this.startTime == null || this.startTime.isBefore(Instant.now()))
+                && (this.endTime == null || this.endTime.isAfter(Instant.now()));
     }
 }
