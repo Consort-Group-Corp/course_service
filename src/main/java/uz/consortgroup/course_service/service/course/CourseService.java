@@ -10,4 +10,5 @@ public interface CourseService {
     CourseResponseDto create(CourseCreateRequestDto dto);
     CoursePurchaseValidationResponseDto validateCourseForPurchase(UUID courseId);
     void delete(UUID courseId);
+    CourseResponseDto getCourseById(UUID courseId);
 }

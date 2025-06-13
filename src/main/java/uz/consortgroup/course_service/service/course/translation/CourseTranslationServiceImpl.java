@@ -10,6 +10,7 @@ import uz.consortgroup.course_service.entity.CourseTranslation;
 import uz.consortgroup.course_service.repository.CourseTranslationRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -38,5 +39,11 @@ public class CourseTranslationServiceImpl implements CourseTranslationService {
     @AllAspect
     public List<CourseTranslation> findByCourseId(UUID courseId) {
         return courseTranslationRepo.findByCourseId(courseId);
+    }
+
+    @Override
+    @AllAspect
+    public Optional<CourseTranslation> findFirstTranslation(UUID courseId) {
+        return courseTranslationRepo.findFirstByCourseIdOrderByLanguageAsc(courseId);
     }
 }
