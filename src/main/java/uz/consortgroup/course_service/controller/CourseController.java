@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,7 +31,11 @@ public class CourseController {
         return courseService.create(dto);
     }
 
-
+    @GetMapping("/{courseId}")
+    @ResponseStatus(HttpStatus.OK)
+    public CourseResponseDto getCourseTitleById(@PathVariable UUID courseId) {
+       return courseService.getCourseById(courseId);
+    }
 
     @DeleteMapping("/{courseId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)

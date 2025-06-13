@@ -108,6 +108,14 @@ public class CourseServiceImpl implements CourseService {
         courseRepository.findById(courseId).ifPresent(courseRepository::delete);
     }
 
+    @Override
+    @AllAspect
+    public CourseResponseDto getCourseById(UUID courseId) {
+        return courseRepository.findById(courseId)
+                .map(courseMapper::toResponseDto)
+                .orElseThrow(() -> new CourseNotFoundException(String.format("Course with id %s not found", courseId)));
+    }
+
     private void mapModulesToResponseDto(CourseResponseDto response, List<Module> savedModules) {
         response.setModules(savedModules.stream()
                 .map(module -> {
