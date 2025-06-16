@@ -7,9 +7,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.CourseStatus;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.CourseType;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.PriceType;
 import uz.consortgroup.core.api.v1.dto.course.request.course.CourseCreateRequestDto;
+import uz.consortgroup.core.api.v1.dto.course.response.course.CoursePurchaseValidationResponseDto;
 import uz.consortgroup.core.api.v1.dto.course.response.course.CourseResponseDto;
 import uz.consortgroup.course_service.entity.Course;
+import uz.consortgroup.course_service.exception.CourseNotFoundException;
 import uz.consortgroup.course_service.mapper.CourseMapper;
 import uz.consortgroup.course_service.mapper.CourseTranslationMapper;
 import uz.consortgroup.course_service.mapper.ModuleMapper;
@@ -22,12 +27,17 @@ import uz.consortgroup.course_service.service.module.ModuleService;
 import uz.consortgroup.course_service.service.module.translation.ModuleTranslationService;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -164,6 +174,65 @@ public class CourseServiceImplTest {
 
         assertThrows(RuntimeException.class, () -> courseService.create(requestDto));
         verify(courseTranslationService, never()).saveTranslations(any(), any());
+    }
+
+    @Test
+    void validateCourseForPurchase_ShouldThrowNotFoundException() {
+        UUID courseId = UUID.randomUUID();
+
+        when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
+
+        assertThrows(CourseNotFoundException.class, () ->
+                courseService.validateCourseForPurchase(courseId));
+    }
+
+    @Test
+    void delete_ShouldDeleteExistingCourse() {
+        UUID courseId = UUID.randomUUID();
+        Course course = new Course();
+        course.setId(courseId);
+
+        when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+
+        assertDoesNotThrow(() -> courseService.delete(courseId));
+        verify(courseRepository).delete(course);
+    }
+
+    @Test
+    void delete_ShouldDoNothingWhenCourseNotFound() {
+        UUID courseId = UUID.randomUUID();
+
+        when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
+
+        assertDoesNotThrow(() -> courseService.delete(courseId));
+        verify(courseRepository, never()).delete(any());
+    }
+
+    @Test
+    void getCourseById_ShouldReturnCourseResponse() {
+        UUID courseId = UUID.randomUUID();
+        Course course = new Course();
+        course.setId(courseId);
+        CourseResponseDto expectedResponse = new CourseResponseDto();
+        expectedResponse.setId(courseId);
+
+        when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
+        when(courseMapper.toResponseDto(course)).thenReturn(expectedResponse);
+
+        CourseResponseDto response = courseService.getCourseById(courseId);
+
+        assertNotNull(response);
+        assertEquals(courseId, response.getId());
+    }
+
+    @Test
+    void getCourseById_ShouldThrowNotFoundException() {
+        UUID courseId = UUID.randomUUID();
+
+        when(courseRepository.findById(courseId)).thenReturn(Optional.empty());
+
+        assertThrows(CourseNotFoundException.class, () ->
+                courseService.getCourseById(courseId));
     }
 
 }
