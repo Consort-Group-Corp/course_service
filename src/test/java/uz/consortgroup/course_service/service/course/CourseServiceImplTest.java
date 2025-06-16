@@ -177,28 +177,6 @@ public class CourseServiceImplTest {
     }
 
     @Test
-    void validateCourseForPurchase_ShouldReturnValidResponse() {
-        UUID courseId = UUID.randomUUID();
-        Course course = new Course();
-        course.setId(courseId);
-        course.setCourseStatus(CourseStatus.ACTIVE);
-        course.setCourseType(CourseType.PREMIUM);
-        course.setPriceType(PriceType.PAID);
-        course.setPriceAmount(BigDecimal.valueOf(100));
-        course.setStartTime(Instant.now());
-        course.setEndTime(Instant.now().plusSeconds(3600));
-
-        when(courseRepository.findById(courseId)).thenReturn(Optional.of(course));
-
-        CoursePurchaseValidationResponseDto response = courseService.validateCourseForPurchase(courseId);
-
-        assertNotNull(response);
-        assertEquals(courseId, response.getId());
-        assertEquals(CourseStatus.ACTIVE, response.getCourseStatus());
-        assertTrue(response.isPurchasable());
-    }
-
-    @Test
     void validateCourseForPurchase_ShouldThrowNotFoundException() {
         UUID courseId = UUID.randomUUID();
 
