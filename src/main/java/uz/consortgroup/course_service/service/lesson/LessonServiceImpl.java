@@ -46,6 +46,14 @@ public class LessonServiceImpl implements LessonService {
         return lessonRepository.saveAll(allLessons);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<Lesson> findByModuleIds(List<UUID> moduleIds) {
+        if (moduleIds == null || moduleIds.isEmpty()) {
+            return List.of();
+        }
+        return lessonRepository.findLessonsByModuleIds(moduleIds);
+    }
 
     @Override
     @AllAspect

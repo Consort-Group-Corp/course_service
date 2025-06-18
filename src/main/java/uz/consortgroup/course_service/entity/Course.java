@@ -19,6 +19,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import uz.consortgroup.core.api.v1.dto.course.enumeration.CourseStatus;
 import uz.consortgroup.core.api.v1.dto.course.enumeration.CourseType;
 import uz.consortgroup.core.api.v1.dto.course.enumeration.PriceType;
@@ -47,9 +48,11 @@ public class Course {
     private UUID authorId;
 
     @OneToMany(mappedBy = "course", orphanRemoval = true, fetch = FetchType.LAZY)
+    @BatchSize(size = 10)
     private List<CourseTranslation> translations;
 
     @OneToMany(mappedBy = "course", orphanRemoval = true, fetch = FetchType.LAZY)
+    @BatchSize(size = 10)
     private List<Module> modules;
 
     @Enumerated(EnumType.STRING)

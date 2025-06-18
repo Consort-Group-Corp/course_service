@@ -13,7 +13,13 @@ java {
     }
 }
 
+extra["springCloudVersion"] = "2024.0.1"
 
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
+    }
+}
 
 configurations {
     compileOnly {
@@ -27,6 +33,10 @@ repositories {
 }
 
 dependencies {
+    //Feign
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
+    implementation("io.github.openfeign.form:feign-form-spring:3.8.0")
+
     // core-api-dto
     implementation("uz.consortgroup:core-api-dto:0.0.1")
 

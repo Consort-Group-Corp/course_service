@@ -21,6 +21,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 import uz.consortgroup.core.api.v1.dto.course.enumeration.LessonType;
 
 import java.time.LocalDateTime;
@@ -45,11 +46,11 @@ public class Lesson {
     @JoinColumn(name = "module_id", nullable = false)
     private Module module;
 
-
     @Column(name = "order_position", nullable = false)
     private Integer orderPosition;
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @BatchSize(size = 10)
     private List<LessonTranslation> translations;
 
     @OneToMany(mappedBy = "lesson", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

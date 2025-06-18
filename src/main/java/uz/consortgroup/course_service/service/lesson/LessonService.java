@@ -12,4 +12,5 @@ public interface LessonService {
     List<Lesson> findByModuleId(UUID moduleId);
     Lesson getLessonEntity(UUID lessonId);
     UUID findLessonId(UUID lessonId);
+    List<Lesson> findByModuleIds(List<UUID> moduleIds);
 }

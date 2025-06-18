@@ -14,6 +14,7 @@ import uz.consortgroup.course_service.validator.CourseValidator;
 import uz.consortgroup.course_service.validator.ModuleValidator;
 
 import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
@@ -40,5 +41,12 @@ public class ModuleServiceImpl implements ModuleService {
                 .toList();
 
         return moduleRepository.saveAll(modules);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @AllAspect
+    public List<Module> findByCourseId(UUID courseId) {
+        return moduleRepository.findByCourseId(courseId);
     }
 }
