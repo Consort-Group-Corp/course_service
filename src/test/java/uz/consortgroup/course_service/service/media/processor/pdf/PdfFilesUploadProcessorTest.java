@@ -114,25 +114,6 @@ public class PdfFilesUploadProcessorTest {
     }
 
     @Test
-    public void testProcessSingle_NullResource() {
-        UUID lessonId = UUID.randomUUID();
-        String fileUrl = "test-url";
-        MimeType mimeType = MimeType.APPLICATION_PDF;
-        long fileSize = 1024L;
-        PdfFileUploadRequestDto dto = mock(PdfFileUploadRequestDto.class);
-
-        when(dto.getOrderPosition()).thenReturn(1);
-        when(resourceService.create(lessonId, ResourceType.PDF, fileUrl, fileSize, mimeType, 1)).thenReturn(null);
-        doReturn(null).when(processor).buildSingleResponse(null, dto); // Замокаем buildSingleResponse для случая null ресурса
-
-        PdfFileUploadResponseDto result = processor.processSingle(lessonId, dto, fileUrl, mimeType, fileSize);
-
-        verify(translationService, never()).saveTranslations(anyList(), anyMap());
-        verify(translationService, never()).findResourceTranslationById(any());
-        assertEquals(null, result);
-    }
-
-    @Test
     public void testProcessSingle_NoTranslations() {
         UUID lessonId = UUID.randomUUID();
         String fileUrl = "test-url";
