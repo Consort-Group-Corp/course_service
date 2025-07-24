@@ -16,10 +16,6 @@ import uz.consortgroup.core.api.v1.dto.course.response.course.TeacherShortDto;
 import uz.consortgroup.core.api.v1.dto.course.response.lesson.LessonPreviewDto;
 import uz.consortgroup.core.api.v1.dto.course.response.module.ModulePreviewDto;
 import uz.consortgroup.core.api.v1.dto.course.response.module.ModuleResponseDto;
-import uz.consortgroup.course_service.asspect.annotation.AllAspect;
-import uz.consortgroup.course_service.asspect.annotation.AspectAfterThrowing;
-import uz.consortgroup.course_service.asspect.annotation.LoggingAspectAfterMethod;
-import uz.consortgroup.course_service.asspect.annotation.LoggingAspectBeforeMethod;
 import uz.consortgroup.course_service.entity.Course;
 import uz.consortgroup.course_service.entity.CourseTranslation;
 import uz.consortgroup.course_service.entity.Lesson;
@@ -49,6 +45,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class CourseServiceImpl implements CourseService {
+
     private final CourseRepository courseRepository;
     private final CourseTranslationMapper courseTranslationMapper;
     private final ModuleTranslationMapper moduleTranslationMapper;
@@ -67,12 +64,13 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     @Transactional
-    @AllAspect
     public CourseResponseDto create(CourseCreateRequestDto dto) {
+        log.info("Creating course...");
         Course course = courseMapper.toEntity(dto);
         Course savedCourse = courseRepository.save(course);
         savedCourse = entityManager.getReference(Course.class, savedCourse.getId());
 
+        log.info("Saving translations and modules for course ID: {}", savedCourse.getId());
         courseTranslationService.saveTranslations(dto.getTranslations(), savedCourse);
         List<CourseTranslation> savedTranslations = courseTranslationService.findByCourseId(savedCourse.getId());
 
@@ -82,20 +80,19 @@ public class CourseServiceImpl implements CourseService {
         List<Lesson> savedLessons = lessonService.saveLessons(dto.getModules(), savedModules);
         lessonTranslationService.saveTranslations(dto.getModules(), savedLessons);
 
-
         CourseResponseDto response = courseMapper.toResponseDto(savedCourse);
         response.setTranslations(savedTranslations.stream()
                 .map(courseTranslationMapper::toResponseDto)
                 .toList());
 
         mapModulesToResponseDto(response, savedModules);
-
+        log.info("Course creation complete for ID: {}", savedCourse.getId());
         return response;
     }
 
     @Override
-    @AllAspect
     public CoursePurchaseValidationResponseDto validateCourseForPurchase(UUID courseId) {
+        log.info("Validating course for purchase: {}", courseId);
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new CourseNotFoundException(String.format("Course with id %s not found", courseId)));
 
@@ -112,33 +109,30 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Override
-    @LoggingAspectBeforeMethod
-    @LoggingAspectAfterMethod
-    @AspectAfterThrowing
     public void delete(UUID courseId) {
-        courseRepository.findById(courseId).ifPresent(courseRepository::delete);
+        log.info("Deleting course with ID: {}", courseId);
+        courseRepository.findById(courseId).ifPresent(course -> {
+            courseRepository.delete(course);
+            log.info("Course deleted: {}", course.getId());
+        });
     }
 
     @Override
-    @AllAspect
     public CourseResponseDto getCourseById(UUID courseId) {
+        log.info("Fetching course by ID: {}", courseId);
         return courseRepository.findById(courseId)
                 .map(courseMapper::toResponseDto)
                 .orElseThrow(() -> new CourseNotFoundException(String.format("Course with id %s not found", courseId)));
     }
 
     @Override
-    @AllAspect
     public CoursePreviewResponseDto getCoursePreview(UUID courseId, Language language) {
+        log.info("Fetching course preview for ID: {} in language: {}", courseId, language);
         Course course = courseRepository.findCourseWithTranslations(courseId, CourseStatus.ACTIVE)
-                .orElseThrow(() -> new CourseNotFoundException("Курс не найден или не опубликован"));
+                .orElseThrow(() -> new CourseNotFoundException("Course not found or not published"));
 
         List<Module> modules = moduleService.findByCourseId(courseId);
-
-        List<UUID> moduleIds = modules.stream()
-                .map(Module::getId)
-                .toList();
-
+        List<UUID> moduleIds = modules.stream().map(Module::getId).toList();
         List<Lesson> lessons = lessonService.findByModuleIds(moduleIds);
 
         Map<UUID, List<Lesson>> lessonMap = lessons.stream()
@@ -158,6 +152,8 @@ public class CourseServiceImpl implements CourseService {
                 .filter(m -> !m.getPreviewLessons().isEmpty())
                 .toList();
 
+        log.info("Course preview prepared for course ID: {}", courseId);
+
         return CoursePreviewResponseDto.builder()
                 .id(course.getId())
                 .coverImageUrl(course.getCoverImageUrl())
@@ -174,7 +170,7 @@ public class CourseServiceImpl implements CourseService {
                 .filter(t -> t.getLanguage().equals(lang))
                 .map(ModuleTranslation::getTitle)
                 .findFirst()
-                .orElse("Без названия");
+                .orElse("Untitled");
 
         List<LessonPreviewDto> lessons = module.getLessons().stream()
                 .filter(Lesson::getIsPreview)
@@ -183,7 +179,7 @@ public class CourseServiceImpl implements CourseService {
                             .filter(t -> t.getLanguage().equals(lang))
                             .map(LessonTranslation::getTitle)
                             .findFirst()
-                            .orElse("Без названия");
+                            .orElse("Untitled");
 
                     return LessonPreviewDto.builder()
                             .id(lesson.getId())

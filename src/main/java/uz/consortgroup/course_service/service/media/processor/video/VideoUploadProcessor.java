@@ -1,5 +1,6 @@
 package uz.consortgroup.course_service.service.media.processor.video;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import uz.consortgroup.core.api.v1.dto.course.enumeration.MimeType;
 import uz.consortgroup.core.api.v1.dto.course.enumeration.ResourceType;
@@ -19,24 +20,29 @@ import uz.consortgroup.course_service.service.resourse.translation.ResourceTrans
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Component
 public class VideoUploadProcessor extends AbstractMediaUploadProcessor<VideoUploadRequestDto, VideoUploadResponseDto,
         BulkVideoUploadRequestDto, BulkVideoUploadResponseDto> {
 
     private final VideoMetadataService videoMetadataService;
 
-    public VideoUploadProcessor(ResourceService resourceService, ResourceTranslationService translationService, ResourceTranslationMapper translationMapper, VideoMetadataService videoMetadataService) {
+    public VideoUploadProcessor(ResourceService resourceService,
+                                ResourceTranslationService translationService,
+                                ResourceTranslationMapper translationMapper,
+                                VideoMetadataService videoMetadataService) {
         super(resourceService, translationService, translationMapper);
         this.videoMetadataService = videoMetadataService;
     }
 
     @Override
     protected List<VideoUploadRequestDto> extractDtos(BulkVideoUploadRequestDto bulkDto) {
-        throw new UnsupportedOperationException("This method is not used in single upload processor");
+        throw new UnsupportedOperationException("extractDtos() is not used in single upload processor");
     }
 
     @Override
     protected Resource createResource(UUID lessonId, VideoUploadRequestDto dto, String fileUrl, MimeType mimeType, long fileSize) {
+        log.debug("Creating video resource for lessonId={}, fileUrl={}", lessonId, fileUrl);
         return resourceService.create(
                 lessonId,
                 ResourceType.VIDEO,
@@ -49,12 +55,13 @@ public class VideoUploadProcessor extends AbstractMediaUploadProcessor<VideoUplo
 
     @Override
     protected List<Resource> prepareResources(UUID lessonId, List<VideoUploadRequestDto> dtos, List<String> fileUrls, List<MimeType> mimeTypes, List<Long> fileSizes) {
-        throw new UnsupportedOperationException("This method is not used in single upload processor");
+        throw new UnsupportedOperationException("prepareResources() is not used in single upload processor");
     }
 
     @Override
     protected void saveTranslations(VideoUploadRequestDto dto, Resource resource) {
         if (dto.getTranslations() != null && !dto.getTranslations().isEmpty()) {
+            log.debug("Saving video translations for resourceId={}", resource.getId());
             List<ResourceTranslation> translations = dto.getTranslations().stream()
                     .map(t -> ResourceTranslation.builder()
                             .resource(resource)
@@ -69,11 +76,12 @@ public class VideoUploadProcessor extends AbstractMediaUploadProcessor<VideoUplo
 
     @Override
     protected void saveAllTranslations(List<VideoUploadRequestDto> dtos, List<Resource> resources) {
-        throw new UnsupportedOperationException("This method is not used in single upload processor");
+        throw new UnsupportedOperationException("saveAllTranslations() is not used in single upload processor");
     }
 
     @Override
     protected VideoUploadResponseDto buildSingleResponse(Resource resource, VideoUploadRequestDto dto) {
+        log.debug("Building video upload response for resourceId={}", resource.getId());
         VideoMetaData meta = videoMetadataService.create(resource.getId(), dto.getDuration(), dto.getResolution());
         List<ResourceTranslation> translations = translationService.findResourceTranslationById(resource.getId());
         return VideoUploadResponseDto.builder()
@@ -88,6 +96,6 @@ public class VideoUploadProcessor extends AbstractMediaUploadProcessor<VideoUplo
 
     @Override
     protected BulkVideoUploadResponseDto buildBulkResponse(List<Resource> resources, List<VideoUploadRequestDto> dtos) {
-        throw new UnsupportedOperationException("This method is not used in single upload processor");
+        throw new UnsupportedOperationException("buildBulkResponse() is not used in single upload processor");
     }
 }

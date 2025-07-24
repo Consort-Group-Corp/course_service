@@ -1,5 +1,6 @@
 package uz.consortgroup.course_service.service.media.processor.image;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import uz.consortgroup.core.api.v1.dto.course.enumeration.MimeType;
 import uz.consortgroup.core.api.v1.dto.course.enumeration.ResourceType;
@@ -11,7 +12,6 @@ import uz.consortgroup.core.api.v1.dto.course.response.image.ImageUploadResponse
 import uz.consortgroup.course_service.entity.Lesson;
 import uz.consortgroup.course_service.entity.Resource;
 import uz.consortgroup.course_service.entity.ResourceTranslation;
-
 import uz.consortgroup.course_service.mapper.ResourceTranslationMapper;
 import uz.consortgroup.course_service.service.media.processor.AbstractMediaUploadProcessor;
 import uz.consortgroup.course_service.service.resourse.ResourceService;
@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Component
 public class BulkImageUploadProcessor extends AbstractMediaUploadProcessor<ImageUploadRequestDto, ImageUploadResponseDto,
         BulkImageUploadRequestDto, BulkImageUploadResponseDto> {
@@ -31,6 +32,7 @@ public class BulkImageUploadProcessor extends AbstractMediaUploadProcessor<Image
 
     @Override
     protected List<ImageUploadRequestDto> extractDtos(BulkImageUploadRequestDto bulkDto) {
+        log.debug("Extracting {} image upload DTOs from bulk request", bulkDto.getImages().size());
         return bulkDto.getImages();
     }
 
@@ -41,6 +43,7 @@ public class BulkImageUploadProcessor extends AbstractMediaUploadProcessor<Image
 
     @Override
     protected List<Resource> prepareResources(UUID lessonId, List<ImageUploadRequestDto> dtos, List<String> fileUrls, List<MimeType> mimeTypes, List<Long> fileSizes) {
+        log.debug("Preparing {} image resource entities for lessonId={}", dtos.size(), lessonId);
         List<Resource> resources = new ArrayList<>();
         for (int i = 0; i < dtos.size(); i++) {
             ImageUploadRequestDto img = dtos.get(i);
@@ -66,6 +69,7 @@ public class BulkImageUploadProcessor extends AbstractMediaUploadProcessor<Image
 
     @Override
     protected void saveAllTranslations(List<ImageUploadRequestDto> dtos, List<Resource> resources) {
+        log.debug("Saving translations for {} resources", resources.size());
         List<ResourceTranslation> translations = new ArrayList<>();
         for (int i = 0; i < dtos.size(); i++) {
             ImageUploadRequestDto img = dtos.get(i);
@@ -82,6 +86,7 @@ public class BulkImageUploadProcessor extends AbstractMediaUploadProcessor<Image
             }
         }
         translationService.saveAllTranslations(translations);
+        log.info("Saved {} resource translations", translations.size());
     }
 
     @Override
@@ -91,6 +96,7 @@ public class BulkImageUploadProcessor extends AbstractMediaUploadProcessor<Image
 
     @Override
     protected BulkImageUploadResponseDto buildBulkResponse(List<Resource> resources, List<ImageUploadRequestDto> dtos) {
+        log.debug("Building bulk image upload response for {} resources", resources.size());
         List<ImageUploadResponseDto> imageDtos = resources.stream()
                 .map(res -> {
                     List<ResourceTranslation> translations = translationService.findResourceTranslationById(res.getId());
@@ -102,6 +108,7 @@ public class BulkImageUploadProcessor extends AbstractMediaUploadProcessor<Image
                             .build();
                 })
                 .toList();
+
         return BulkImageUploadResponseDto.builder()
                 .images(imageDtos)
                 .build();

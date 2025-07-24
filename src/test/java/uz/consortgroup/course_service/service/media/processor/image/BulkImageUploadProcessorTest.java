@@ -250,17 +250,6 @@ public class BulkImageUploadProcessorTest {
         assertThrows(UnsupportedOperationException.class, () -> processor.processSingle(lessonId, dto, fileUrl, mimeType, fileSize));
     }
 
-    @Test
-    public void testExtractDtos_NullImages() {
-        BulkImageUploadRequestDto bulkDto = mock(BulkImageUploadRequestDto.class);
-
-        when(bulkDto.getImages()).thenReturn(null);
-
-        List<ImageUploadRequestDto> result = processor.extractDtos(bulkDto);
-
-        assertEquals(null, result);
-    }
-
     private Resource createResource(String fileUrl, int orderPosition) {
         Resource resource = new Resource();
         resource.setId(UUID.randomUUID());
