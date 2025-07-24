@@ -3,13 +3,11 @@ package uz.consortgroup.course_service.service.media.image;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
 import uz.consortgroup.core.api.v1.dto.course.request.image.BulkImageUploadRequestDto;
 import uz.consortgroup.core.api.v1.dto.course.request.image.ImageUploadRequestDto;
 import uz.consortgroup.core.api.v1.dto.course.response.image.BulkImageUploadResponseDto;
 import uz.consortgroup.core.api.v1.dto.course.response.image.ImageUploadResponseDto;
-import uz.consortgroup.course_service.asspect.annotation.AllAspect;
 import uz.consortgroup.course_service.entity.Resource;
 import uz.consortgroup.course_service.repository.ResourceRepository;
 import uz.consortgroup.course_service.service.lesson.LessonService;
@@ -38,17 +36,26 @@ public class ImageServiceImpl extends AbstractMediaUploadService<ImageUploadRequ
 
     @Override
     @Transactional
-    @AllAspect
     public void delete(UUID lessonId, UUID resourceId) {
-        Resource res = resourceRepository.findByIdAndLesson(resourceId, lessonId).orElseThrow(() -> new EntityNotFoundException("Resource not found"));
+        log.info("Attempting to delete resource with id={} for lessonId={}", resourceId, lessonId);
+
+        Resource res = resourceRepository.findByIdAndLesson(resourceId, lessonId)
+                .orElseThrow(() -> {
+                    log.warn("Resource not found for deletion: resourceId={}, lessonId={}", resourceId, lessonId);
+                    return new EntityNotFoundException("Resource not found");
+                });
+
         storage.delete(res.getFileUrl());
         resourceRepository.delete(res);
+
+        log.info("Successfully deleted resource with id={} for lessonId={}", resourceId, lessonId);
     }
 
     @Override
     @Transactional
-    @AllAspect
     public void deleteBulk(UUID lessonId, List<UUID> resourceIds) {
+        log.info("Attempting to bulk delete {} resources for lessonId={}", resourceIds.size(), lessonId);
+
         List<Resource> resources = resourceRepository.findAllByIdsAndLesson(resourceIds, lessonId);
 
         for (Resource res : resources) {
@@ -56,5 +63,7 @@ public class ImageServiceImpl extends AbstractMediaUploadService<ImageUploadRequ
         }
 
         resourceRepository.deleteAll(resources);
+
+        log.info("Successfully deleted {} resources for lessonId={}", resources.size(), lessonId);
     }
 }

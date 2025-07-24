@@ -1,5 +1,6 @@
 package uz.consortgroup.course_service.service.media.processor.video;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uz.consortgroup.core.api.v1.dto.course.enumeration.MimeType;
 import uz.consortgroup.core.api.v1.dto.course.enumeration.ResourceType;
@@ -22,40 +23,45 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class BulkVideoUploadProcessor extends AbstractMediaUploadProcessor<VideoUploadRequestDto, VideoUploadResponseDto,
         BulkVideoUploadRequestDto, BulkVideoUploadResponseDto> {
+
     private final VideoMetadataService videoMetadataService;
 
-    public BulkVideoUploadProcessor(ResourceService resourceService, ResourceTranslationService translationService, ResourceTranslationMapper translationMapper, VideoMetadataService videoMetadataService) {
+    public BulkVideoUploadProcessor(ResourceService resourceService,
+                                    ResourceTranslationService translationService,
+                                    ResourceTranslationMapper translationMapper,
+                                    VideoMetadataService videoMetadataService) {
         super(resourceService, translationService, translationMapper);
         this.videoMetadataService = videoMetadataService;
     }
 
     @Override
     protected List<VideoUploadRequestDto> extractDtos(BulkVideoUploadRequestDto bulkDto) {
+        log.debug("Extracting video upload request DTOs from bulk request.");
         return bulkDto.getVideos();
     }
 
     @Override
     protected Resource createResource(UUID lessonId, VideoUploadRequestDto dto, String fileUrl, MimeType mimeType, long fileSize) {
-        throw new UnsupportedOperationException("This method is not used in bulk upload processor");
+        throw new UnsupportedOperationException("createResource() is not used in bulk upload processor");
     }
 
     @Override
-    protected List<Resource> prepareResources(UUID lessonId, List<VideoUploadRequestDto> dtos, List<String> fileUrls, List<MimeType> mimeTypes, List<Long> fileSizes) {
+    protected List<Resource> prepareResources(UUID lessonId, List<VideoUploadRequestDto> dtos,
+                                              List<String> fileUrls, List<MimeType> mimeTypes, List<Long> fileSizes) {
+        log.debug("Preparing video resources for lessonId={}", lessonId);
         List<Resource> resources = new ArrayList<>();
         for (int i = 0; i < dtos.size(); i++) {
             VideoUploadRequestDto vid = dtos.get(i);
-            String fileUrl = fileUrls.get(i);
-            MimeType mimeType = mimeTypes.get(i);
-            long fileSize = fileSizes.get(i);
             resources.add(Resource.builder()
                     .lesson(Lesson.builder().id(lessonId).build())
                     .resourceType(ResourceType.VIDEO)
-                    .fileUrl(fileUrl)
-                    .fileSize(fileSize)
-                    .mimeType(mimeType)
+                    .fileUrl(fileUrls.get(i))
+                    .fileSize(fileSizes.get(i))
+                    .mimeType(mimeTypes.get(i))
                     .orderPosition(vid.getOrderPosition())
                     .build());
         }
@@ -64,11 +70,12 @@ public class BulkVideoUploadProcessor extends AbstractMediaUploadProcessor<Video
 
     @Override
     protected void saveTranslations(VideoUploadRequestDto dto, Resource resource) {
-        throw new UnsupportedOperationException("This method is not used in bulk upload processor");
+        throw new UnsupportedOperationException("saveTranslations() is not used in bulk upload processor");
     }
 
     @Override
     protected void saveAllTranslations(List<VideoUploadRequestDto> dtos, List<Resource> resources) {
+        log.debug("Saving video translations for {} resources", resources.size());
         List<ResourceTranslation> translations = new ArrayList<>();
         for (int i = 0; i < dtos.size(); i++) {
             VideoUploadRequestDto vid = dtos.get(i);
@@ -89,11 +96,12 @@ public class BulkVideoUploadProcessor extends AbstractMediaUploadProcessor<Video
 
     @Override
     protected VideoUploadResponseDto buildSingleResponse(Resource resource, VideoUploadRequestDto dto) {
-        throw new UnsupportedOperationException("This method is not used in bulk upload processor");
+        throw new UnsupportedOperationException("buildSingleResponse() is not used in bulk upload processor");
     }
 
     @Override
     protected BulkVideoUploadResponseDto buildBulkResponse(List<Resource> resources, List<VideoUploadRequestDto> dtos) {
+        log.debug("Building bulk response for {} video resources", resources.size());
         List<VideoUploadResponseDto> videoDtos = new ArrayList<>();
         for (int i = 0; i < resources.size(); i++) {
             Resource res = resources.get(i);

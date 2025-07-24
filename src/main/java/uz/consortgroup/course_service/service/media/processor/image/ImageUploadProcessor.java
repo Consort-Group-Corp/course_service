@@ -1,5 +1,6 @@
 package uz.consortgroup.course_service.service.media.processor.image;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uz.consortgroup.core.api.v1.dto.course.enumeration.MimeType;
 import uz.consortgroup.core.api.v1.dto.course.enumeration.ResourceType;
@@ -17,6 +18,7 @@ import uz.consortgroup.course_service.service.resourse.translation.ResourceTrans
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class ImageUploadProcessor extends AbstractMediaUploadProcessor<ImageUploadRequestDto, ImageUploadResponseDto,
         BulkImageUploadRequestDto, BulkImageUploadResponseDto> {
@@ -32,6 +34,7 @@ public class ImageUploadProcessor extends AbstractMediaUploadProcessor<ImageUplo
 
     @Override
     protected Resource createResource(UUID lessonId, ImageUploadRequestDto dto, String fileUrl, MimeType mimeType, long fileSize) {
+        log.debug("Creating image resource for lessonId={}, fileUrl={}, mimeType={}", lessonId, fileUrl, mimeType);
         return resourceService.create(
                 lessonId,
                 ResourceType.IMAGE,
@@ -50,7 +53,10 @@ public class ImageUploadProcessor extends AbstractMediaUploadProcessor<ImageUplo
     @Override
     protected void saveTranslations(ImageUploadRequestDto dto, Resource resource) {
         if (dto.getTranslations() != null && !dto.getTranslations().isEmpty()) {
+            log.debug("Saving {} translations for resourceId={}", dto.getTranslations().size(), resource.getId());
             translationService.saveTranslations(dto.getTranslations(), resource);
+        } else {
+            log.debug("No translations provided for resourceId={}", resource.getId());
         }
     }
 
@@ -61,6 +67,7 @@ public class ImageUploadProcessor extends AbstractMediaUploadProcessor<ImageUplo
 
     @Override
     protected ImageUploadResponseDto buildSingleResponse(Resource resource, ImageUploadRequestDto dto) {
+        log.debug("Building response DTO for image resourceId={}", resource.getId());
         List<ResourceTranslation> translations = translationService.findResourceTranslationById(resource.getId());
         return ImageUploadResponseDto.builder()
                 .resourceId(resource.getId())

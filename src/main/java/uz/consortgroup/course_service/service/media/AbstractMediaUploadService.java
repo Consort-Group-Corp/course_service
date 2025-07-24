@@ -1,11 +1,11 @@
 package uz.consortgroup.course_service.service.media;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import uz.consortgroup.core.api.v1.dto.course.enumeration.FileType;
 import uz.consortgroup.core.api.v1.dto.course.enumeration.MimeType;
-import uz.consortgroup.course_service.asspect.annotation.AllAspect;
 import uz.consortgroup.course_service.entity.Lesson;
 import uz.consortgroup.course_service.service.lesson.LessonService;
 import uz.consortgroup.course_service.service.media.processor.AbstractMediaUploadProcessor;
@@ -16,10 +16,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
-public abstract class AbstractMediaUploadService<SingleRequestDto, SingleResponseDto, BulkRequestDto, BulkResponseDto, SingleProcessor
-        extends AbstractMediaUploadProcessor<SingleRequestDto, SingleResponseDto, BulkRequestDto, BulkResponseDto>, BulkProcessor
-        extends AbstractMediaUploadProcessor<SingleRequestDto, SingleResponseDto, BulkRequestDto, BulkResponseDto>> {
+public abstract class AbstractMediaUploadService<
+        SingleRequestDto,
+        SingleResponseDto,
+        BulkRequestDto,
+        BulkResponseDto,
+        SingleProcessor extends AbstractMediaUploadProcessor<SingleRequestDto, SingleResponseDto, BulkRequestDto, BulkResponseDto>,
+        BulkProcessor extends AbstractMediaUploadProcessor<SingleRequestDto, SingleResponseDto, BulkRequestDto, BulkResponseDto>> {
 
     protected final FileStorageService storage;
     protected final LessonService lessonService;
@@ -28,10 +33,12 @@ public abstract class AbstractMediaUploadService<SingleRequestDto, SingleRespons
     protected final FileStorageValidator fileStorageValidator;
 
     @Transactional
-    @AllAspect
     public SingleResponseDto upload(UUID lessonId, SingleRequestDto dto, MultipartFile file) {
+        log.info("Uploading single file for lessonId={}, fileName={}", lessonId, file.getOriginalFilename());
+
         FileType fileType = fileStorageValidator.determineFileType(file);
         fileStorageValidator.validateFile(file, fileType);
+
         Lesson lesson = getLesson(lessonId);
         UUID courseId = lesson.getModule().getCourse().getId();
 
@@ -39,12 +46,14 @@ public abstract class AbstractMediaUploadService<SingleRequestDto, SingleRespons
         MimeType mimeType = MimeType.fromContentType(Objects.requireNonNull(file.getContentType()));
         String fileUrl = storage.store(courseId, lessonId, file);
 
+        log.debug("File stored at url={}, size={} bytes, mimeType={}", fileUrl, fileSize, mimeType);
         return singleProcessor.processSingle(lessonId, dto, fileUrl, mimeType, fileSize);
     }
 
     @Transactional
-    @AllAspect
     public BulkResponseDto uploadBulk(UUID lessonId, BulkRequestDto dto, List<MultipartFile> files) {
+        log.info("Uploading bulk files for lessonId={}, totalFiles={}", lessonId, files.size());
+
         fileStorageValidator.validateMultipleFiles(files);
         fileStorageValidator.validateBulk(dto, files);
 
@@ -57,6 +66,7 @@ public abstract class AbstractMediaUploadService<SingleRequestDto, SingleRespons
                 .map(file -> MimeType.fromContentType(Objects.requireNonNull(file.getContentType())))
                 .toList();
 
+        log.debug("Bulk file upload completed. URLs={}, Sizes={}, MimeTypes={}", fileUrls, fileSizes, mimeTypes);
         return bulkProcessor.processBulkUpload(lessonId, dto, fileUrls, mimeTypes, fileSizes);
     }
 

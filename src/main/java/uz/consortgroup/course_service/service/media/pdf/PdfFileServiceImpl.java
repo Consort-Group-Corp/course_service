@@ -8,7 +8,6 @@ import uz.consortgroup.core.api.v1.dto.course.request.pdf.BulkPdfFilesUploadRequ
 import uz.consortgroup.core.api.v1.dto.course.request.pdf.PdfFileUploadRequestDto;
 import uz.consortgroup.core.api.v1.dto.course.response.pdf.BulkPdfFilesUploadResponseDto;
 import uz.consortgroup.core.api.v1.dto.course.response.pdf.PdfFileUploadResponseDto;
-import uz.consortgroup.course_service.asspect.annotation.AllAspect;
 import uz.consortgroup.course_service.entity.Resource;
 import uz.consortgroup.course_service.repository.ResourceRepository;
 import uz.consortgroup.course_service.service.lesson.LessonService;
@@ -38,22 +37,35 @@ public class PdfFileServiceImpl extends AbstractMediaUploadService<PdfFileUpload
 
     @Override
     @Transactional
-    @AllAspect
     public void delete(UUID lessonId, UUID resourceId) {
-        Resource res = resourceRepository.findByIdAndLesson(resourceId, lessonId).orElseThrow(() -> new EntityNotFoundException("Resource not found"));
+        log.info("Attempting to delete PDF resource with id={} for lessonId={}", resourceId, lessonId);
+
+        Resource res = resourceRepository.findByIdAndLesson(resourceId, lessonId)
+                .orElseThrow(() -> {
+                    log.warn("PDF resource not found for deletion: resourceId={}, lessonId={}", resourceId, lessonId);
+                    return new EntityNotFoundException("Resource not found");
+                });
+
         storage.delete(res.getFileUrl());
         resourceRepository.delete(res);
+
+        log.info("Successfully deleted PDF resource with id={} for lessonId={}", resourceId, lessonId);
     }
 
     @Override
     @Transactional
-    @AllAspect
     public void deleteBulk(UUID lessonId, List<UUID> resourceIds) {
+        log.info("Attempting bulk delete of {} PDF resources for lessonId={}", resourceIds.size(), lessonId);
+
         List<Resource> resources = resourceRepository.findAllByIdsAndLesson(resourceIds, lessonId);
+
         for (Resource res : resources) {
-            log.info(" - Deleting resource id={} url={}", res.getId(), res.getFileUrl());
+            log.info("Deleting PDF resource id={}, url={}", res.getId(), res.getFileUrl());
             storage.delete(res.getFileUrl());
         }
+
         resourceRepository.deleteAll(resources);
+
+        log.info("Successfully deleted {} PDF resources for lessonId={}", resources.size(), lessonId);
     }
 }

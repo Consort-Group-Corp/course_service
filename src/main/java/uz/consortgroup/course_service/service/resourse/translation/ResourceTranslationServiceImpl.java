@@ -1,13 +1,11 @@
 package uz.consortgroup.course_service.service.resourse.translation;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.consortgroup.core.api.v1.dto.course.request.module.ModuleCreateRequestDto;
 import uz.consortgroup.core.api.v1.dto.course.request.resource.ResourceTranslationRequestDto;
-import uz.consortgroup.course_service.asspect.annotation.AllAspect;
-import uz.consortgroup.course_service.asspect.annotation.LoggingAspectAfterMethod;
-import uz.consortgroup.course_service.asspect.annotation.LoggingAspectBeforeMethod;
 import uz.consortgroup.course_service.entity.Resource;
 import uz.consortgroup.course_service.entity.ResourceTranslation;
 import uz.consortgroup.course_service.repository.ResourceTranslationRepository;
@@ -20,15 +18,16 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ResourceTranslationServiceImpl implements ResourceTranslationService {
     private final ResourceTranslationRepository resourceTranslationRepository;
     private final ResourceTranslationValidator validator;
 
     @Override
     @Transactional
-    @LoggingAspectBeforeMethod
-    @LoggingAspectAfterMethod
     public void saveTranslations(List<ModuleCreateRequestDto> modules, Map<UUID, List<Resource>> lessonResourcesMap) {
+        log.info("Saving translations for {} modules", modules.size());
+
         List<ResourceTranslation> translations = modules.stream()
                 .flatMap(moduleDto -> moduleDto.getLessons().stream())
                 .flatMap(lessonDto -> {
@@ -41,31 +40,36 @@ public class ResourceTranslationServiceImpl implements ResourceTranslationServic
                 .toList();
 
         resourceTranslationRepository.saveAll(translations);
+        log.debug("Saved {} resource translations", translations.size());
     }
 
     @Override
     @Transactional
-    @LoggingAspectBeforeMethod
-    @LoggingAspectAfterMethod
     public void saveTranslations(List<ResourceTranslationRequestDto> dtoList, Resource resource) {
-        List<ResourceTranslation> translations = validator.validateTranslations(dtoList, resource)
-                .toList();
+        log.info("Saving {} translations for resourceId={}", dtoList.size(), resource.getId());
 
+        List<ResourceTranslation> translations = validator.validateTranslations(dtoList, resource).toList();
         translations = resourceTranslationRepository.saveAll(translations);
 
         translations.forEach(translation -> translation.setResource(resource));
         resource.setTranslations(translations);
+
+        log.debug("Saved translations for resourceId={}", resource.getId());
     }
 
     @Override
-    @AllAspect
     public List<ResourceTranslation> saveAllTranslations(List<ResourceTranslation> translations) {
-        return resourceTranslationRepository.saveAll(translations);
+        log.info("Saving {} translations in bulk", translations.size());
+        List<ResourceTranslation> saved = resourceTranslationRepository.saveAll(translations);
+        log.debug("Saved {} translations in bulk", saved.size());
+        return saved;
     }
 
     @Override
-    @AllAspect
     public List<ResourceTranslation> findResourceTranslationById(UUID id) {
-        return resourceTranslationRepository.findResourceTranslationById(id);
+        log.info("Fetching translations for resourceId={}", id);
+        List<ResourceTranslation> list = resourceTranslationRepository.findResourceTranslationById(id);
+        log.debug("Found {} translations for resourceId={}", list.size(), id);
+        return list;
     }
 }

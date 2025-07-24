@@ -1,12 +1,10 @@
 package uz.consortgroup.course_service.service.module.translation;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.consortgroup.core.api.v1.dto.course.request.module.ModuleCreateRequestDto;
-import uz.consortgroup.course_service.asspect.annotation.AllAspect;
-import uz.consortgroup.course_service.asspect.annotation.LoggingAspectAfterMethod;
-import uz.consortgroup.course_service.asspect.annotation.LoggingAspectBeforeMethod;
 import uz.consortgroup.course_service.entity.Module;
 import uz.consortgroup.course_service.entity.ModuleTranslation;
 import uz.consortgroup.course_service.repository.ModuleTranslationRepository;
@@ -16,6 +14,7 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class ModuleTranslationServiceImpl implements ModuleTranslationService {
@@ -23,9 +22,9 @@ public class ModuleTranslationServiceImpl implements ModuleTranslationService {
 
     @Override
     @Transactional
-    @LoggingAspectBeforeMethod
-    @LoggingAspectAfterMethod
     public void saveTranslations(List<ModuleCreateRequestDto> modulesDto, List<Module> savedModules) {
+        log.info("Saving module translations for {} modules", modulesDto.size());
+
         List<ModuleTranslation> translations = IntStream.range(0, modulesDto.size())
                 .mapToObj(i -> {
                     ModuleCreateRequestDto dto = modulesDto.get(i);
@@ -43,11 +42,14 @@ public class ModuleTranslationServiceImpl implements ModuleTranslationService {
                 .toList();
 
         translationRepository.saveAll(translations);
+        log.debug("Saved {} module translations", translations.size());
     }
 
     @Override
-    @AllAspect
     public List<ModuleTranslation> findByModuleId(UUID moduleId) {
-        return translationRepository.findByModuleId(moduleId);
+        log.info("Fetching translations for moduleId={}", moduleId);
+        List<ModuleTranslation> result = translationRepository.findByModuleId(moduleId);
+        log.debug("Found {} translations for moduleId={}", result.size(), moduleId);
+        return result;
     }
 }

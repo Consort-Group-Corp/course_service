@@ -1,5 +1,6 @@
 package uz.consortgroup.course_service.service.media.processor.pdf;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uz.consortgroup.core.api.v1.dto.course.enumeration.MimeType;
 import uz.consortgroup.core.api.v1.dto.course.enumeration.ResourceType;
@@ -17,20 +18,26 @@ import uz.consortgroup.course_service.service.resourse.translation.ResourceTrans
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class PdfFilesUploadProcessor extends AbstractMediaUploadProcessor<PdfFileUploadRequestDto, PdfFileUploadResponseDto,
         BulkPdfFilesUploadRequestDto, BulkPdfFilesUploadResponseDto> {
-    public PdfFilesUploadProcessor(ResourceService resourceService, ResourceTranslationService translationService, ResourceTranslationMapper translationMapper) {
+
+    public PdfFilesUploadProcessor(ResourceService resourceService,
+                                   ResourceTranslationService translationService,
+                                   ResourceTranslationMapper translationMapper) {
         super(resourceService, translationService, translationMapper);
     }
 
     @Override
     protected List<PdfFileUploadRequestDto> extractDtos(BulkPdfFilesUploadRequestDto bulkDto) {
-        return List.of();
+        log.debug("extractDtos() is not supported in PdfFilesUploadProcessor (single upload)");
+        return List.of(); // method is not used in single upload
     }
 
     @Override
     protected Resource createResource(UUID lessonId, PdfFileUploadRequestDto dto, String fileUrl, MimeType mimeType, long fileSize) {
+        log.debug("Creating PDF resource for lessonId={} with fileUrl={}", lessonId, fileUrl);
         return resourceService.create(
                 lessonId,
                 ResourceType.PDF,
@@ -42,25 +49,34 @@ public class PdfFilesUploadProcessor extends AbstractMediaUploadProcessor<PdfFil
     }
 
     @Override
-    protected List<Resource> prepareResources(UUID lessonId, List<PdfFileUploadRequestDto> pdfFileUploadRequestDtos, List<String> fileUrls, List<MimeType> mimeTypes, List<Long> fileSizes) {
-        throw new UnsupportedOperationException("This method is not used in single upload processor");
+    protected List<Resource> prepareResources(UUID lessonId,
+                                              List<PdfFileUploadRequestDto> pdfFileUploadRequestDtos,
+                                              List<String> fileUrls,
+                                              List<MimeType> mimeTypes,
+                                              List<Long> fileSizes) {
+        throw new UnsupportedOperationException("prepareResources() is not used in single upload processor");
     }
 
     @Override
     protected void saveTranslations(PdfFileUploadRequestDto dto, Resource resource) {
         if (dto.getTranslations() != null && !dto.getTranslations().isEmpty()) {
+            log.debug("Saving translations for PDF resource id={}", resource.getId());
             translationService.saveTranslations(dto.getTranslations(), resource);
+        } else {
+            log.debug("No translations to save for PDF resource id={}", resource.getId());
         }
     }
 
     @Override
     protected void saveAllTranslations(List<PdfFileUploadRequestDto> pdfFileUploadRequestDtos, List<Resource> resources) {
-        throw new UnsupportedOperationException("This method is not used in single upload processor");
+        throw new UnsupportedOperationException("saveAllTranslations() is not used in single upload processor");
     }
 
     @Override
     protected PdfFileUploadResponseDto buildSingleResponse(Resource resource, PdfFileUploadRequestDto pdfFileUploadRequestDto) {
+        log.debug("Building single response for PDF resource id={}", resource.getId());
         List<ResourceTranslation> translations = translationService.findResourceTranslationById(resource.getId());
+
         return PdfFileUploadResponseDto.builder()
                 .resourceId(resource.getId())
                 .fileUrl(resource.getFileUrl())
@@ -71,6 +87,6 @@ public class PdfFilesUploadProcessor extends AbstractMediaUploadProcessor<PdfFil
 
     @Override
     protected BulkPdfFilesUploadResponseDto buildBulkResponse(List<Resource> resources, List<PdfFileUploadRequestDto> pdfFileUploadRequestDtos) {
-        throw new UnsupportedOperationException("This method is not used in single upload processor");
+        throw new UnsupportedOperationException("buildBulkResponse() is not used in single upload processor");
     }
 }

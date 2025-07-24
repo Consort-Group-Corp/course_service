@@ -1,5 +1,6 @@
 package uz.consortgroup.course_service.service.media.processor.pdf;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uz.consortgroup.core.api.v1.dto.course.enumeration.ResourceType;
 import uz.consortgroup.core.api.v1.dto.course.enumeration.MimeType;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class BulkPdfFilesUploadProcessor extends AbstractMediaUploadProcessor<PdfFileUploadRequestDto, PdfFileUploadResponseDto,
         BulkPdfFilesUploadRequestDto, BulkPdfFilesUploadResponseDto> {
@@ -30,7 +32,7 @@ public class BulkPdfFilesUploadProcessor extends AbstractMediaUploadProcessor<Pd
 
     @Override
     protected List<PdfFileUploadRequestDto> extractDtos(BulkPdfFilesUploadRequestDto bulkDto) {
-       return bulkDto.getPdfs();
+        return bulkDto.getPdfs();
     }
 
     @Override
@@ -41,12 +43,17 @@ public class BulkPdfFilesUploadProcessor extends AbstractMediaUploadProcessor<Pd
     @Override
     protected List<Resource> prepareResources(UUID lessonId, List<PdfFileUploadRequestDto> dtos, List<String> fileUrls,
                                               List<MimeType> mimeTypes, List<Long> fileSizes) {
+        log.debug("Preparing {} PDF resources for lessonId={}", dtos.size(), lessonId);
+
         List<Resource> resources = new ArrayList<>();
         for (int i = 0; i < dtos.size(); i++) {
             PdfFileUploadRequestDto pdf = dtos.get(i);
             String fileUrl = fileUrls.get(i);
             MimeType mimeType = mimeTypes.get(i);
             long fileSize = fileSizes.get(i);
+
+            log.debug("Preparing PDF resource: fileUrl={}, mimeType={}, size={}", fileUrl, mimeType, fileSize);
+
             resources.add(Resource.builder()
                     .lesson(Lesson.builder().id(lessonId).build())
                     .resourceType(ResourceType.PDF)
@@ -56,6 +63,7 @@ public class BulkPdfFilesUploadProcessor extends AbstractMediaUploadProcessor<Pd
                     .orderPosition(pdf.getOrderPosition())
                     .build());
         }
+
         return resources;
     }
 
@@ -66,6 +74,8 @@ public class BulkPdfFilesUploadProcessor extends AbstractMediaUploadProcessor<Pd
 
     @Override
     protected void saveAllTranslations(List<PdfFileUploadRequestDto> dtos, List<Resource> resources) {
+        log.debug("Saving translations for {} PDF resources", resources.size());
+
         List<ResourceTranslation> translations = new ArrayList<>();
         for (int i = 0; i < dtos.size(); i++) {
             PdfFileUploadRequestDto pdf = dtos.get(i);
@@ -81,7 +91,9 @@ public class BulkPdfFilesUploadProcessor extends AbstractMediaUploadProcessor<Pd
                 }
             }
         }
+
         translationService.saveAllTranslations(translations);
+        log.debug("Saved {} translation entries", translations.size());
     }
 
     @Override
@@ -90,7 +102,9 @@ public class BulkPdfFilesUploadProcessor extends AbstractMediaUploadProcessor<Pd
     }
 
     @Override
-    protected BulkPdfFilesUploadResponseDto buildBulkResponse(List<Resource> resources, List<PdfFileUploadRequestDto> pdfFileUploadRequestDtos) {
+    protected BulkPdfFilesUploadResponseDto buildBulkResponse(List<Resource> resources, List<PdfFileUploadRequestDto> dtos) {
+        log.debug("Building bulk response for {} PDF resources", resources.size());
+
         List<PdfFileUploadResponseDto> pdfFileDtos = resources.stream()
                 .map(res -> {
                     List<ResourceTranslation> translations = translationService.findResourceTranslationById(res.getId());

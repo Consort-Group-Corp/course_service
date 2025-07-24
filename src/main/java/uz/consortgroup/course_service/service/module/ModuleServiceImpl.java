@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import uz.consortgroup.core.api.v1.dto.course.request.module.ModuleCreateRequestDto;
-import uz.consortgroup.course_service.asspect.annotation.AllAspect;
 import uz.consortgroup.course_service.entity.Course;
 import uz.consortgroup.course_service.entity.Module;
 import uz.consortgroup.course_service.repository.ModuleRepository;
@@ -26,8 +25,8 @@ public class ModuleServiceImpl implements ModuleService {
 
     @Override
     @Transactional(propagation = Propagation.MANDATORY)
-    @AllAspect
     public List<Module> saveModules(List<ModuleCreateRequestDto> modulesDto, Course course) {
+        log.info("Saving modules for courseId={}", course.getId());
         courseValidator.validateCourse(course);
         moduleValidator.validateModules(modulesDto);
 
@@ -40,13 +39,17 @@ public class ModuleServiceImpl implements ModuleService {
                         .build())
                 .toList();
 
-        return moduleRepository.saveAll(modules);
+        List<Module> saved = moduleRepository.saveAll(modules);
+        log.debug("Saved {} modules for courseId={}", saved.size(), course.getId());
+        return saved;
     }
 
     @Override
     @Transactional(readOnly = true)
-    @AllAspect
     public List<Module> findByCourseId(UUID courseId) {
-        return moduleRepository.findByCourseId(courseId);
+        log.info("Fetching modules for courseId={}", courseId);
+        List<Module> modules = moduleRepository.findByCourseId(courseId);
+        log.debug("Found {} modules for courseId={}", modules.size(), courseId);
+        return modules;
     }
 }
