@@ -165,6 +165,12 @@ public class CourseServiceImpl implements CourseService {
                 .build();
     }
 
+    @Override
+    public boolean courseExistsById(UUID courseId) {
+        log.debug("Checking existence of course with ID: {}", courseId);
+        return courseRepository.existsById(courseId);
+    }
+
     private ModulePreviewDto mapToModulePreview(Module module, Language lang) {
         String moduleTitle = module.getTranslations().stream()
                 .filter(t -> t.getLanguage().equals(lang))
