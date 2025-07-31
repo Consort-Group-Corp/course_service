@@ -26,4 +26,5 @@ public interface CourseService {
      * @throws CourseNotFoundException если курс не существует или ещё не опубликован
      */
     CoursePreviewResponseDto getCoursePreview(UUID courseId, Language language);
+    boolean courseExistsById(UUID courseId);
 }
