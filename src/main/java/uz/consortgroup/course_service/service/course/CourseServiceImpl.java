@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import uz.consortgroup.core.api.v1.dto.course.enumeration.CourseStatus;
 import uz.consortgroup.core.api.v1.dto.course.enumeration.Language;
+import uz.consortgroup.core.api.v1.dto.course.enumeration.PriceType;
 import uz.consortgroup.core.api.v1.dto.course.request.course.CourseCreateRequestDto;
 import uz.consortgroup.core.api.v1.dto.course.response.course.CoursePreviewResponseDto;
 import uz.consortgroup.core.api.v1.dto.course.response.course.CoursePurchaseValidationResponseDto;
@@ -36,6 +37,7 @@ import uz.consortgroup.course_service.service.module.ModuleService;
 import uz.consortgroup.course_service.service.module.translation.ModuleTranslationService;
 import uz.consortgroup.course_service.service.teacher.TeacherInfoService;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -92,9 +94,14 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public CoursePurchaseValidationResponseDto validateCourseForPurchase(UUID courseId) {
-        log.info("Validating course for purchase: {}", courseId);
         Course course = courseRepository.findById(courseId)
-                .orElseThrow(() -> new CourseNotFoundException(String.format("Course with id %s not found", courseId)));
+                .orElseThrow(() -> new CourseNotFoundException("Course with id %s not found".formatted(courseId)));
+
+        Instant now = Instant.now();
+        boolean purchasable = isPurchasable(course, now);
+
+        log.info("Purchasability check: courseId={}, purchasable={}, status={}, priceType={}, start={}, end={}",
+                courseId, purchasable, course.getCourseStatus(), course.getPriceType(), course.getStartTime(), course.getEndTime());
 
         return CoursePurchaseValidationResponseDto.builder()
                 .id(course.getId())
@@ -104,7 +111,7 @@ public class CourseServiceImpl implements CourseService {
                 .priceAmount(course.getPriceAmount())
                 .startTime(course.getStartTime())
                 .endTime(course.getEndTime())
-                .purchasable(course.isPurchasable())
+                .purchasable(purchasable)
                 .build();
     }
 
@@ -169,6 +176,26 @@ public class CourseServiceImpl implements CourseService {
     public boolean courseExistsById(UUID courseId) {
         log.debug("Checking existence of course with ID: {}", courseId);
         return courseRepository.existsById(courseId);
+    }
+
+    private boolean isPurchasable(Course c, Instant now) {
+        return isActive(c) && isWithinWindow(c, now) && hasValidPriceIfPaid(c);
+    }
+
+    private boolean isActive(Course c) {
+        return c.getCourseStatus() == CourseStatus.ACTIVE;
+    }
+
+    private boolean isWithinWindow(Course c, Instant now) {
+        Instant start = c.getStartTime();
+        Instant end   = c.getEndTime();
+        if (start == null || end == null) return true;
+        return !now.isBefore(start) && !now.isAfter(end);
+    }
+
+    private boolean hasValidPriceIfPaid(Course c) {
+        if (c.getPriceType() != PriceType.PAID) return true;
+        return c.getPriceAmount() != null && c.getPriceAmount().signum() > 0;
     }
 
     private ModulePreviewDto mapToModulePreview(Module module, Language lang) {
