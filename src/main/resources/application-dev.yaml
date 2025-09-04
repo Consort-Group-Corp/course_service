@@ -6,11 +6,11 @@ spring:
     import: optional:file:.env[.properties]
 
   application:
-    name: course_service
+    name: course-service
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/consort_group
+    url: jdbc:postgresql://db:5432/consort_group
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     hikari:
@@ -29,8 +29,8 @@ spring:
 
   data:
     redis:
-      host: localhost
-      port: 6384
+      host: consort-redis-course-service
+      port: 6379
 
   servlet:
     multipart:
@@ -77,4 +77,4 @@ logging:
 
 user:
   service:
-    url: http://localhost:8081
+    url: http://consort-user-service:8081
