@@ -10,9 +10,9 @@ spring:
 
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://db:5432/consort_group
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://${DB_HOST:consort-postgres}:${DB_PORT:5432}/${POSTGRES_DB:consort_group}}
+    username: ${DB_USERNAME:${POSTGRES_USER:consort}}
+    password: ${DB_PASSWORD:${POSTGRES_PASSWORD:consort}}
     hikari:
       maximum-pool-size: 10
 
@@ -21,22 +21,44 @@ spring:
       ddl-auto: update
     show-sql: true
     properties:
-      hibernate:
-        format_sql: true
+      hibernate.format_sql: true
 
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.yaml
 
   data:
     redis:
-      host: consort-redis-course-service
-      port: 6379
+      host: ${REDIS_COURSE_HOST:consort-redis-course-service}
+      port: ${REDIS_COURSE_PORT:6379}
+      timeout: 3000ms
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: -1ms
+        shutdown-timeout: 100ms
 
   servlet:
     multipart:
       max-file-size: 1000MB
       max-request-size: 1000MB
       enabled: true
+
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:"consort-kafka:9092"}
+    producer:
+      acks: all
+      retries: 10
+    properties:
+      metadata.max.age.ms: 30000
+
+logging:
+  level:
+    root: INFO
+    org.springframework: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.http.converter.json: TRACE
 
 storage:
   base-dir: media/uploads
@@ -68,13 +90,51 @@ storage:
       allowed-extensions:
         - pdf
 
-logging:
-  level:
-    root: INFO
-    org.springframework: DEBUG
-    org.springframework.web: DEBUG
-    org.springframework.http.converter.json: TRACE
-
 user:
   service:
-    url: http://consort-user-service:8081
+    url: ${USER_SERVICE_URL:http://consort-user-service:8081}
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://consort-eureka-service:8762/eureka/}
+  instance:
+    prefer-ip-address: true
+    instance-id: ${HOSTNAME}:${server.port}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when_authorized
+      show-components: when_authorized
+  health:
+    redis:
+      enabled: true
+    db:
+      enabled: true
+    defaults:
+      enabled: true
+    diskspace:
+      enabled: true
+    ping:
+      enabled: true
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    docExpansion: full
+    defaultModelsExpandDepth: 1
+    defaultModelExpandDepth: 3
+    defaultModelRendering: schema
+    operationsSorter: method
+    tagsSorter: alpha
+  model-converters:
+    pageable-converter:
+      enabled: true
