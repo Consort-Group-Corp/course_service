@@ -40,6 +40,9 @@ dependencies {
     // core-api-dto
     implementation("uz.consortgroup:core-api-dto:0.0.1")
 
+    //Eureka
+    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+
     // Lombok
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
@@ -68,6 +71,8 @@ dependencies {
     // Redis
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
 
+    //Actuator
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
 
     // Тестирование
     testImplementation("org.springframework.boot:spring-boot-starter-test")
