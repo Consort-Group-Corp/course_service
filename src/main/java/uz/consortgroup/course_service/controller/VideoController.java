@@ -1,7 +1,6 @@
 package uz.consortgroup.course_service.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,27 +29,24 @@ import java.util.UUID;
 @Validated
 public class VideoController {
     private final VideoService videoUploadService;
-    private final ObjectMapper objectMapper;
 
-    @PostMapping(value = "{lessonId}/videos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "{lessonId}/videos", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public VideoUploadResponseDto uploadVideo(
             @PathVariable UUID lessonId,
-            @RequestPart("metadata") String metadataJson,
-            @RequestPart("file") MultipartFile file) throws JsonProcessingException {
-
-        VideoUploadRequestDto metadata = objectMapper.readValue(metadataJson, VideoUploadRequestDto.class);
+            @RequestPart("metadata") @Valid VideoUploadRequestDto metadata,
+            @RequestPart("file") MultipartFile file
+    ) {
         return videoUploadService.upload(lessonId, metadata, file);
     }
 
-    @PostMapping(value = "{lessonId}/videos/bulk", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "{lessonId}/videos/bulk", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public BulkVideoUploadResponseDto uploadVideos(
             @PathVariable UUID lessonId,
-            @RequestPart("metadata") String metadataJson,
-            @RequestPart("files") List<MultipartFile> files) throws JsonProcessingException {
-
-        BulkVideoUploadRequestDto metadata = objectMapper.readValue(metadataJson, BulkVideoUploadRequestDto.class);
+            @RequestPart("metadata") @Valid BulkVideoUploadRequestDto metadata,
+            @RequestPart("files") List<MultipartFile> files
+    ) {
         return videoUploadService.uploadBulk(lessonId, metadata, files);
     }
 

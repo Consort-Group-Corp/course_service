@@ -2,6 +2,7 @@ package uz.consortgroup.course_service.handler;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import jakarta.validation.ConstraintViolationException;
+import jakarta.ws.rs.BadRequestException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -10,13 +11,16 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
+import uz.consortgroup.course_service.exception.ConflictException;
 import uz.consortgroup.course_service.exception.CourseNotFoundException;
 import uz.consortgroup.course_service.exception.EmptyFileException;
 import uz.consortgroup.course_service.exception.FileSizeLimitExceededException;
 import uz.consortgroup.course_service.exception.LessonNotFoundException;
 import uz.consortgroup.course_service.exception.MismatchException;
+import uz.consortgroup.course_service.exception.SlugAlreadyExistsException;
 import uz.consortgroup.course_service.exception.UnsupportedFileExtensionException;
 import uz.consortgroup.course_service.exception.UnsupportedMimeTypeException;
 
@@ -48,12 +52,13 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "File size limit exceeded", ex.getMessage()));
     }
 
-    @ExceptionHandler(EmptyFileException.class)
-    public ResponseEntity<ErrorResponse> handleEmptyFileException(EmptyFileException ex) {
-        log.error("EmptyFileException: ", ex);
+    @ExceptionHandler(SlugAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleSlugAlreadyExistsException(SlugAlreadyExistsException ex) {
+        log.error("SlugAlreadyExistsException: ", ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Empty file", ex.getMessage()));
+                .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Slug already exists", ex.getMessage()));
     }
+
 
     @ExceptionHandler(UnsupportedFileExtensionException.class)
     public ResponseEntity<ErrorResponse> handleUnsupportedFileExtensionException(UnsupportedFileExtensionException ex) {
@@ -96,6 +101,13 @@ public class GlobalExceptionHandler {
        log.error("MismatchException: ", ex);
        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Mismatch error", ex.getMessage()));
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<ErrorResponse> handleConflictException(ConflictException ex) {
+        log.error("ConflictException: ", ex);
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(HttpStatus.CONFLICT.value(), "Conflict error", ex.getMessage()));
     }
 
 
@@ -147,5 +159,12 @@ public class GlobalExceptionHandler {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Invalid data", "Database integrity violation occurred"));
+    }
+
+    @ExceptionHandler(EmptyFileException.class)
+    public ResponseEntity<ErrorResponse> handleEmptyFileException(EmptyFileException ex) {
+        log.error("EmptyFileException: ", ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Empty file", ex.getMessage()));
     }
 }

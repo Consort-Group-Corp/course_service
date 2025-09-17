@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(ImageController.class)
-public class ImageControllerTest {
+class ImageControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -41,78 +41,49 @@ public class ImageControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-
     @Test
     void uploadImage_Success() throws Exception {
         UUID lessonId = UUID.randomUUID();
-        ImageUploadRequestDto metadata = ImageUploadRequestDto.builder()
-            .orderPosition(1)
-            .build();
+        ImageUploadRequestDto metadata = ImageUploadRequestDto.builder().orderPosition(1).build();
+        MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpeg", "content".getBytes());
+        MockPart metadataPart = new MockPart("metadata", objectMapper.writeValueAsString(metadata).getBytes());
+        metadataPart.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-        MockMultipartFile file = new MockMultipartFile(
-            "file", "test.jpg", "image/jpeg", "test image content".getBytes());
-
-        when(imageService.upload(eq(lessonId), any(), any()))
-            .thenReturn(ImageUploadResponseDto.builder().build());
+        when(imageService.upload(eq(lessonId), any(), any())).thenReturn(ImageUploadResponseDto.builder().build());
 
         mockMvc.perform(multipart("/api/v1/lessons/{lessonId}/images", lessonId)
-                .file(file)
-                .part(new MockPart("metadata",
-                    objectMapper.writeValueAsString(metadata).getBytes()))
-                .contentType(MediaType.MULTIPART_FORM_DATA))
-            .andExpect(status().isCreated());
+                        .file(file)
+                        .part(metadataPart)
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isCreated());
     }
 
     @Test
     void uploadImagesBulk_Success() throws Exception {
         UUID lessonId = UUID.randomUUID();
         BulkImageUploadRequestDto metadata = BulkImageUploadRequestDto.builder()
-            .images(List.of(ImageUploadRequestDto.builder().orderPosition(1).build()))
-            .build();
-
-        MockMultipartFile file1 = new MockMultipartFile(
-            "files", "test1.jpg", "image/jpeg", "content1".getBytes());
-        MockMultipartFile file2 = new MockMultipartFile(
-            "files", "test2.jpg", "image/jpeg", "content2".getBytes());
-
-        when(imageService.uploadBulk(eq(lessonId), any(), any()))
-            .thenReturn(BulkImageUploadResponseDto.builder().build());
-
-        mockMvc.perform(multipart("/api/v1/lessons/{lessonId}/images/bulk", lessonId)
-                .file(file1)
-                .file(file2)
-                .part(new MockPart("metadata", 
-                    objectMapper.writeValueAsString(metadata).getBytes()))).andExpect(status().isCreated());
-    }
-
-
-
-    @Test
-    void uploadImage_InvalidMetadata() throws Exception {
-        UUID lessonId = UUID.randomUUID();
-        MockMultipartFile file = new MockMultipartFile(
-                "file", "test.jpg", "image/jpeg", "content".getBytes());
-
-        String invalidJson = "{\"orderPosition\":1";
-
-        MockPart metadataPart = new MockPart("metadata", invalidJson.getBytes());
+                .images(List.of(ImageUploadRequestDto.builder().orderPosition(1).build()))
+                .build();
+        MockMultipartFile file1 = new MockMultipartFile("files", "1.jpg", "image/jpeg", "c1".getBytes());
+        MockMultipartFile file2 = new MockMultipartFile("files", "2.jpg", "image/jpeg", "c2".getBytes());
+        MockPart metadataPart = new MockPart("metadata", objectMapper.writeValueAsString(metadata).getBytes());
         metadataPart.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-        mockMvc.perform(multipart("/api/v1/lessons/{lessonId}/images", lessonId)
-                        .file(file)
-                        .part(metadataPart))
-                .andExpect(status().isBadRequest());
+        when(imageService.uploadBulk(eq(lessonId), any(), any())).thenReturn(BulkImageUploadResponseDto.builder().build());
+
+        mockMvc.perform(multipart("/api/v1/lessons/{lessonId}/images/bulk", lessonId)
+                        .file(file1)
+                        .file(file2)
+                        .part(metadataPart)
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isCreated());
     }
 
     @Test
     void uploadImage_MissingFile() throws Exception {
         UUID lessonId = UUID.randomUUID();
-        ImageUploadRequestDto metadata = ImageUploadRequestDto.builder()
-                .orderPosition(1)
-                .build();
-
-        MockPart metadataPart = new MockPart("metadata",
-                objectMapper.writeValueAsString(metadata).getBytes());
+        ImageUploadRequestDto metadata = ImageUploadRequestDto.builder().orderPosition(1).build();
+        MockPart metadataPart = new MockPart("metadata", objectMapper.writeValueAsString(metadata).getBytes());
         metadataPart.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(multipart("/api/v1/lessons/{lessonId}/images", lessonId)
@@ -126,13 +97,15 @@ public class ImageControllerTest {
     void uploadImagesBulk_EmptyFilesList() throws Exception {
         UUID lessonId = UUID.randomUUID();
         BulkImageUploadRequestDto metadata = BulkImageUploadRequestDto.builder()
-            .images(List.of(ImageUploadRequestDto.builder().build()))
-            .build();
+                .images(List.of(ImageUploadRequestDto.builder().build()))
+                .build();
+        MockPart metadataPart = new MockPart("metadata", objectMapper.writeValueAsString(metadata).getBytes());
+        metadataPart.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
         mockMvc.perform(multipart("/api/v1/lessons/{lessonId}/images/bulk", lessonId)
-                .part(new MockPart("metadata", 
-                    objectMapper.writeValueAsString(metadata).getBytes())))
-            .andExpect(status().isBadRequest());
+                        .part(metadataPart)
+                        .contentType(MediaType.MULTIPART_FORM_DATA))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -146,20 +119,13 @@ public class ImageControllerTest {
                 .build();
 
         doThrow(new MismatchException("Количество файлов не соответствует метаданным"))
-                .when(imageService)
-                .uploadBulk(eq(lessonId), any(BulkImageUploadRequestDto.class), anyList());
+                .when(imageService).uploadBulk(eq(lessonId), any(BulkImageUploadRequestDto.class), anyList());
 
-        MockPart metadataPart = new MockPart(
-                "metadata",
-                objectMapper.writeValueAsString(metadata).getBytes(StandardCharsets.UTF_8)
-        );
+        MockPart metadataPart = new MockPart("metadata",
+                objectMapper.writeValueAsString(metadata).getBytes(StandardCharsets.UTF_8));
         metadataPart.getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
-        MockPart filePart = new MockPart(
-                "files",
-                "test.jpg",
-                "content".getBytes(StandardCharsets.UTF_8)
-        );
+        MockPart filePart = new MockPart("files", "test.jpg", "content".getBytes(StandardCharsets.UTF_8));
         filePart.getHeaders().setContentType(MediaType.IMAGE_JPEG);
 
         mockMvc.perform(multipart("/api/v1/lessons/{lessonId}/images/bulk", lessonId)

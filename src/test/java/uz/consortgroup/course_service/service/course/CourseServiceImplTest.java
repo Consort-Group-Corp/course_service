@@ -25,6 +25,7 @@ import uz.consortgroup.course_service.service.lesson.LessonService;
 import uz.consortgroup.course_service.service.lesson.translation.LessonTranslationService;
 import uz.consortgroup.course_service.service.module.ModuleService;
 import uz.consortgroup.course_service.service.module.translation.ModuleTranslationService;
+import uz.consortgroup.course_service.validator.CourseTranslationValidator;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -75,6 +76,9 @@ public class CourseServiceImplTest {
 
     @Mock
     private ModuleMapper moduleMapper;
+
+    @Mock
+    private CourseTranslationValidator courseTranslationValidator;
 
     @Mock
     private ModuleTranslationMapper moduleTranslationMapper;

@@ -1,7 +1,6 @@
 package uz.consortgroup.course_service.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,24 +29,24 @@ import java.util.UUID;
 @Validated
 public class PdfFileController {
     private final PdfFileService fileService;
-    private final ObjectMapper objectMapper;
 
+    @PostMapping(value = "/{lessonId}/pdfs", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping(value = "/{lessonId}/pdfs", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public PdfFileUploadResponseDto uploadPdfFile(@PathVariable UUID lessonId,
-                                                  @RequestPart("metadata") String metadataJson,
-                                                  @RequestPart("file") MultipartFile file)
-            throws JsonProcessingException {
-        PdfFileUploadRequestDto metadata = objectMapper.readValue(metadataJson, PdfFileUploadRequestDto.class);
+    public PdfFileUploadResponseDto uploadPdfFile(
+            @PathVariable UUID lessonId,
+            @RequestPart("metadata") @Valid PdfFileUploadRequestDto metadata,
+            @RequestPart("file") MultipartFile file
+    ) {
         return fileService.upload(lessonId, metadata, file);
     }
 
-    @PostMapping(value = "/{lessonId}/pdfs/bulk", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/{lessonId}/pdfs/bulk", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public BulkPdfFilesUploadResponseDto uploadPdfFiles(@PathVariable UUID lessonId,
-                                                        @RequestPart("metadata") String metadataJson,
-                                                        @RequestPart("files") List<MultipartFile> files) throws JsonProcessingException {
-        BulkPdfFilesUploadRequestDto metadata = objectMapper.readValue(metadataJson, BulkPdfFilesUploadRequestDto.class);
+    public BulkPdfFilesUploadResponseDto uploadPdfFiles(
+            @PathVariable UUID lessonId,
+            @RequestPart("metadata") @Valid BulkPdfFilesUploadRequestDto metadata,
+            @RequestPart("files") List<MultipartFile> files
+    ) {
         return fileService.uploadBulk(lessonId, metadata, files);
     }
 
