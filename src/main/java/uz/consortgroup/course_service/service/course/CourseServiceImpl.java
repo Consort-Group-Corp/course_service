@@ -36,6 +36,7 @@ import uz.consortgroup.course_service.service.lesson.translation.LessonTranslati
 import uz.consortgroup.course_service.service.module.ModuleService;
 import uz.consortgroup.course_service.service.module.translation.ModuleTranslationService;
 import uz.consortgroup.course_service.service.teacher.TeacherInfoService;
+import uz.consortgroup.course_service.validator.CourseTranslationValidator;
 
 import java.time.Instant;
 import java.util.List;
@@ -60,6 +61,7 @@ public class CourseServiceImpl implements CourseService {
     private final LessonMapper lessonMapper;
     private final ModuleService moduleService;
     private final ModuleMapper moduleMapper;
+    private final CourseTranslationValidator courseTranslationValidator;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -67,6 +69,8 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional
     public CourseResponseDto create(CourseCreateRequestDto dto) {
+        courseTranslationValidator.validateSlugsOrThrow(dto.getTranslations());
+
         log.info("Creating course...");
         Course course = courseMapper.toEntity(dto);
         Course savedCourse = courseRepository.save(course);
