@@ -1,0 +1,41 @@
+package uz.consortgroup.course_service.service.event.mentor;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import uz.consortgroup.course_service.event.mentor.MentorActionEvent;
+import uz.consortgroup.course_service.event.mentor.MentorActionType;
+import uz.consortgroup.course_service.kafka.MentorActionLogProducer;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+public class MentorActionLogger {
+    private final MentorActionLogProducer mentorActionLogProducer;
+
+    public void logMentorResourceAction(UUID resource, UUID mentorId, MentorActionType mentorActionType) {
+        MentorActionEvent event = MentorActionEvent.builder()
+                .messageId(UUID.randomUUID())
+                .mentorId(mentorId)
+                .resourceId(resource)
+                .mentorActionType(mentorActionType)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        mentorActionLogProducer.sendMentorActionEvents(List.of(event));
+    }
+
+    public void logUserSearch(UUID mentorId, UUID targetUserId) {
+        MentorActionEvent event = MentorActionEvent.builder()
+                .messageId(UUID.randomUUID())
+                .mentorId(mentorId)
+                .resourceId(targetUserId)
+                .mentorActionType(MentorActionType.SEARCH_USER)
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        mentorActionLogProducer.sendMentorActionEvents(List.of(event));
+    }
+}

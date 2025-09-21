@@ -23,6 +23,7 @@ import uz.consortgroup.course_service.entity.Lesson;
 import uz.consortgroup.course_service.entity.LessonTranslation;
 import uz.consortgroup.course_service.entity.Module;
 import uz.consortgroup.course_service.entity.ModuleTranslation;
+import uz.consortgroup.course_service.event.mentor.MentorActionType;
 import uz.consortgroup.course_service.exception.CourseNotFoundException;
 import uz.consortgroup.course_service.mapper.CourseMapper;
 import uz.consortgroup.course_service.mapper.CourseTranslationMapper;
@@ -31,6 +32,7 @@ import uz.consortgroup.course_service.mapper.ModuleMapper;
 import uz.consortgroup.course_service.mapper.ModuleTranslationMapper;
 import uz.consortgroup.course_service.repository.CourseRepository;
 import uz.consortgroup.course_service.service.course.translation.CourseTranslationService;
+import uz.consortgroup.course_service.service.event.mentor.MentorActionLogger;
 import uz.consortgroup.course_service.service.lesson.LessonService;
 import uz.consortgroup.course_service.service.lesson.translation.LessonTranslationService;
 import uz.consortgroup.course_service.service.module.ModuleService;
@@ -62,6 +64,7 @@ public class CourseServiceImpl implements CourseService {
     private final ModuleService moduleService;
     private final ModuleMapper moduleMapper;
     private final CourseTranslationValidator courseTranslationValidator;
+    private final MentorActionLogger mentorActionLogger;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -86,6 +89,7 @@ public class CourseServiceImpl implements CourseService {
         List<Lesson> savedLessons = lessonService.saveLessons(dto.getModules(), savedModules);
         lessonTranslationService.saveTranslations(dto.getModules(), savedLessons);
 
+
         CourseResponseDto response = courseMapper.toResponseDto(savedCourse);
         response.setTranslations(savedTranslations.stream()
                 .map(courseTranslationMapper::toResponseDto)
@@ -93,6 +97,8 @@ public class CourseServiceImpl implements CourseService {
 
         mapModulesToResponseDto(response, savedModules);
         log.info("Course creation complete for ID: {}", savedCourse.getId());
+        mentorActionLogger.logMentorResourceAction(savedCourse.getId(), savedCourse.getAuthorId(), MentorActionType.COURSE_CREATED);
+
         return response;
     }
 

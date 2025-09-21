@@ -47,6 +47,15 @@ spring:
 
   kafka:
     bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:"consort-kafka:9092"}
+    consumer:
+      group-id: ${SPRING_KAFKA_CONSUMER_GROUP_ID:user-service-group}
+      auto-offset-reset: latest
+      max-poll-records: ${SPRING_KAFKA_CONSUMER_MAX_POLL_RECORDS:500}
+      properties:
+        session.timeout.ms: ${SPRING_KAFKA_CONSUMER_SESSION_TIMEOUT_MS:10000}
+        heartbeat.interval.ms: ${SPRING_KAFKA_CONSUMER_HEARTBEAT_INTERVAL_MS:3000}
+        max.partition.fetch.bytes: ${SPRING_KAFKA_CONSUMER_MAX_PARTITION_FETCH_BYTES:1048576}
+        max.poll.interval.ms: ${SPRING_KAFKA_CONSUMER_MAX_POLL_INTERVAL_MS:300000}
     producer:
       acks: all
       retries: 10
@@ -59,6 +68,10 @@ logging:
     org.springframework: DEBUG
     org.springframework.web: DEBUG
     org.springframework.http.converter.json: TRACE
+
+# Бизнес-топики
+kafka:
+  mentor-action: mentor-action-topic
 
 storage:
   base-dir: media/uploads
