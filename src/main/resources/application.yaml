@@ -75,6 +75,34 @@ logging:
     org.springframework.web: DEBUG
     org.springframework.http.converter.json: TRACE
 
+kafka:
+  bootstrap-servers: localhost:9092
+  consumer-group-id: course-service-group
+  session-timeout-ms: 10000
+  max-partition-fetch-bytes: 1048576
+  max-poll-records: 500
+  max-poll-interval-ms: 300000
+  mentor-action: mentor-action-topic
+  producer:
+    enable: true
+
+
 user:
   service:
     url: http://localhost:8081
+
+springdoc:
+  api-docs:
+    enabled: true
+
+  swagger-ui:
+    docExpansion: full
+    defaultModelsExpandDepth: 1
+    defaultModelExpandDepth: 3
+    defaultModelRendering: schema
+    operationsSorter: method
+    tagsSorter: alpha
+
+  model-converters:
+    pageable-converter:
+      enabled: true
