@@ -48,7 +48,7 @@ spring:
   kafka:
     bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:"consort-kafka:9092"}
     consumer:
-      group-id: ${SPRING_KAFKA_CONSUMER_GROUP_ID:user-service-group}
+      group-id: ${SPRING_KAFKA_CONSUMER_GROUP_ID:course-service-group}
       auto-offset-reset: latest
       max-poll-records: ${SPRING_KAFKA_CONSUMER_MAX_POLL_RECORDS:500}
       properties:
@@ -148,6 +148,7 @@ springdoc:
     defaultModelRendering: schema
     operationsSorter: method
     tagsSorter: alpha
+    use-root-path: true
   model-converters:
     pageable-converter:
       enabled: true

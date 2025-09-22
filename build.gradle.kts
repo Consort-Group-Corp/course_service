@@ -33,6 +33,9 @@ repositories {
 }
 
 dependencies {
+    // Swagger (SpringDoc) -
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.9")
+
     //Feign
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     implementation("io.github.openfeign.form:feign-form-spring:3.8.0")
