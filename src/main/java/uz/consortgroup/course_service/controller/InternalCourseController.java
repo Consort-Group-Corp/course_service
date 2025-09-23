@@ -1,5 +1,6 @@
 package uz.consortgroup.course_service.controller;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/internal/courses")
 @RequiredArgsConstructor
+@Hidden
 public class InternalCourseController {
     
     private final CourseService courseService;
