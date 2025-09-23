@@ -1,6 +1,7 @@
 package uz.consortgroup.course_service.controller;
 
 
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/internal/forum-directory")
 @RequiredArgsConstructor
+@Hidden
 public class ForumDirectoryController {
 
     private final CourseDirectoryService courseDirectoryService;
