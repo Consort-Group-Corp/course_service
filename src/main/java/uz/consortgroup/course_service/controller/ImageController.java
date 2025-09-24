@@ -1,5 +1,9 @@
 package uz.consortgroup.course_service.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,6 +31,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping(value = "/api/v1/lessons")
 @Validated
+@Tag(name = "Image", description = "Работа с изображениями")
 public class ImageController {
     private final ImageService imageService;
 
@@ -35,6 +40,11 @@ public class ImageController {
     public ImageUploadResponseDto uploadImage(
             @PathVariable UUID lessonId,
             @RequestPart("metadata") @Valid ImageUploadRequestDto metadata,
+            @Parameter(
+                    name = "file",
+                    description = "Поддерживаемые типы: image/jpeg, image/png. Макс. размер: 100MB. Разрешённые расширения: jpg, jpeg, png",
+                    schema = @Schema(type = "string", format = "binary")
+            )
             @RequestPart("file") MultipartFile file
     ) {
         return imageService.upload(lessonId, metadata, file);
@@ -45,6 +55,11 @@ public class ImageController {
     public BulkImageUploadResponseDto uploadImages(
             @PathVariable UUID lessonId,
             @RequestPart("metadata") @Valid BulkImageUploadRequestDto metadata,
+            @Parameter(
+                    name = "files",
+                    description = "Поддерживаемые типы: image/jpeg, image/png. Макс. размер каждого файла: 100MB. Разрешённые расширения: jpg, jpeg, png",
+                    array = @ArraySchema(schema = @Schema(type = "string", format = "binary"))
+            )
             @RequestPart("files") List<MultipartFile> files
     ) {
         return imageService.uploadBulk(lessonId, metadata, files);

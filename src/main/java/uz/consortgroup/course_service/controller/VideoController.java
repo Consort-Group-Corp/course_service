@@ -1,5 +1,9 @@
 package uz.consortgroup.course_service.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,6 +31,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/lessons")
 @Validated
+@Tag(name = "Video", description = "работа с видео")
 public class VideoController {
     private final VideoService videoUploadService;
 
@@ -35,6 +40,11 @@ public class VideoController {
     public VideoUploadResponseDto uploadVideo(
             @PathVariable UUID lessonId,
             @RequestPart("metadata") @Valid VideoUploadRequestDto metadata,
+            @Parameter(
+                    name = "file",
+                    description = "Поддерживаемые типы: video/mp4, video/mpeg. Макс. размер: 1000MB. Разрешённые расширения: mp4, mpeg",
+                    schema = @Schema(type = "string", format = "binary")
+            )
             @RequestPart("file") MultipartFile file
     ) {
         return videoUploadService.upload(lessonId, metadata, file);
@@ -45,6 +55,11 @@ public class VideoController {
     public BulkVideoUploadResponseDto uploadVideos(
             @PathVariable UUID lessonId,
             @RequestPart("metadata") @Valid BulkVideoUploadRequestDto metadata,
+            @Parameter(
+                    name = "files",
+                    description = "Поддерживаемые типы: video/mp4, video/mpeg. Макс. размер каждого файла: 1000MB. Разрешённые расширения: mp4, mpeg",
+                    array = @ArraySchema(schema = @Schema(type = "string", format = "binary"))
+            )
             @RequestPart("files") List<MultipartFile> files
     ) {
         return videoUploadService.uploadBulk(lessonId, metadata, files);
