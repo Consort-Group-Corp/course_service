@@ -1,5 +1,9 @@
 package uz.consortgroup.course_service.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,6 +31,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping(value = "/api/v1/lessons")
 @Validated
+@Tag(name = "PDF Files", description = "работа с pdf файлами")
 public class PdfFileController {
     private final PdfFileService fileService;
 
@@ -35,6 +40,11 @@ public class PdfFileController {
     public PdfFileUploadResponseDto uploadPdfFile(
             @PathVariable UUID lessonId,
             @RequestPart("metadata") @Valid PdfFileUploadRequestDto metadata,
+            @Parameter(
+                    name = "file",
+                    description = "Поддерживаемые типы: application/pdf. Макс. размер: 20MB. Разрешённые расширения: pdf",
+                    schema = @Schema(type = "string", format = "binary")
+            )
             @RequestPart("file") MultipartFile file
     ) {
         return fileService.upload(lessonId, metadata, file);
@@ -45,6 +55,11 @@ public class PdfFileController {
     public BulkPdfFilesUploadResponseDto uploadPdfFiles(
             @PathVariable UUID lessonId,
             @RequestPart("metadata") @Valid BulkPdfFilesUploadRequestDto metadata,
+            @Parameter(
+                    name = "files",
+                    description = "Поддерживаемые типы: application/pdf. Макс. размер каждого файла: 20MB. Разрешённые расширения: pdf",
+                    array = @ArraySchema(schema = @Schema(type = "string", format = "binary"))
+            )
             @RequestPart("files") List<MultipartFile> files
     ) {
         return fileService.uploadBulk(lessonId, metadata, files);
