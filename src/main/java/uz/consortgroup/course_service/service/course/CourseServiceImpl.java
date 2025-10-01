@@ -13,10 +13,12 @@ import uz.consortgroup.core.api.v1.dto.course.request.course.CourseCreateRequest
 import uz.consortgroup.core.api.v1.dto.course.response.course.CoursePreviewResponseDto;
 import uz.consortgroup.core.api.v1.dto.course.response.course.CoursePurchaseValidationResponseDto;
 import uz.consortgroup.core.api.v1.dto.course.response.course.CourseResponseDto;
+import uz.consortgroup.core.api.v1.dto.course.response.course.EnrollmentFilterRequest;
 import uz.consortgroup.core.api.v1.dto.course.response.course.TeacherShortDto;
 import uz.consortgroup.core.api.v1.dto.course.response.lesson.LessonPreviewDto;
 import uz.consortgroup.core.api.v1.dto.course.response.module.ModulePreviewDto;
 import uz.consortgroup.core.api.v1.dto.course.response.module.ModuleResponseDto;
+import uz.consortgroup.course_service.client.UserEnrollmentClient;
 import uz.consortgroup.course_service.entity.Course;
 import uz.consortgroup.course_service.entity.CourseTranslation;
 import uz.consortgroup.course_service.entity.Lesson;
@@ -65,6 +67,7 @@ public class CourseServiceImpl implements CourseService {
     private final ModuleMapper moduleMapper;
     private final CourseTranslationValidator courseTranslationValidator;
     private final MentorActionLogger mentorActionLogger;
+    private final UserEnrollmentClient userEnrollmentClient;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -186,6 +189,22 @@ public class CourseServiceImpl implements CourseService {
     public boolean courseExistsById(UUID courseId) {
         log.debug("Checking existence of course with ID: {}", courseId);
         return courseRepository.existsById(courseId);
+    }
+
+    @Override
+    public UUID getMentorIdByCourseId(UUID courseId) {
+        return courseRepository.findMentorIdById(courseId)
+                .orElseThrow(() -> new CourseNotFoundException("Course not found: " + courseId));
+    }
+
+    @Override
+    public List<UUID> filterEnrolledUserIds(UUID courseId, List<UUID> userIds) {
+        if (userIds == null || userIds.isEmpty()) return List.of();
+
+        EnrollmentFilterRequest req = new EnrollmentFilterRequest(courseId, userIds);
+        List<UUID> result = userEnrollmentClient.filterEnrolled(req);
+        log.debug("filterEnrolled: course={}, in={}, out={}", courseId, userIds.size(), result.size());
+        return result;
     }
 
     private boolean isPurchasable(Course c, Instant now) {

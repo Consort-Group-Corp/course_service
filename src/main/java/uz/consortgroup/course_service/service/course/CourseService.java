@@ -7,6 +7,7 @@ import uz.consortgroup.core.api.v1.dto.course.response.course.CoursePurchaseVali
 import uz.consortgroup.core.api.v1.dto.course.response.course.CourseResponseDto;
 import uz.consortgroup.course_service.exception.CourseNotFoundException;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface CourseService {
@@ -27,4 +28,7 @@ public interface CourseService {
      */
     CoursePreviewResponseDto getCoursePreview(UUID courseId, Language language);
     boolean courseExistsById(UUID courseId);
+
+    UUID getMentorIdByCourseId(UUID courseId);
+    List<UUID> filterEnrolledUserIds(UUID courseId, List<UUID> userIds);
 }
