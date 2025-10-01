@@ -21,4 +21,7 @@ public interface CourseRepository extends JpaRepository<Course, UUID> {
     @EntityGraph(attributePaths = {"translations"})
     @Query("SELECT c FROM Course c WHERE c.id = :id AND c.courseStatus = :status")
     Optional<Course> findCourseWithTranslations(@Param("id") UUID id, @Param("status") CourseStatus status);
+
+    @Query("select c.authorId from Course c where c.id = :courseId")
+    Optional<UUID> findMentorIdById(@Param("courseId") UUID courseId);
 }
